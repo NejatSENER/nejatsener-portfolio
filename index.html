@@ -1,0 +1,1450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Nejat Berk Şener — Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* ─────────────── tokens ─────────────── */
+:root {
+  --cream: #F2EBDD;
+  --cream-2: #E8DFCC;
+  --paper: #FBF6EB;
+  --ink: #1B1815;
+  --ink-2: #2E2924;
+  --muted: #6E665B;
+  --rule: rgba(27,24,21,.14);
+  --accent: oklch(0.58 0.13 42);       /* terracotta */
+  --accent-soft: oklch(0.58 0.13 42 / .14);
+  --sage: oklch(0.62 0.08 150);
+  --plum: oklch(0.48 0.10 340);
+  --ochre: oklch(0.72 0.13 80);
+  --bg: var(--cream);
+  --fg: var(--ink);
+  --fg-muted: var(--muted);
+  --card: var(--paper);
+  --shadow: 0 1px 0 rgba(27,24,21,.04), 0 20px 40px -20px rgba(27,24,21,.18);
+  --serif: 'Instrument Serif', 'Cochin', 'Times New Roman', serif;
+  --sans: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+[data-theme="dark"] {
+  --cream: #14110E;
+  --cream-2: #1F1B16;
+  --paper: #1A1714;
+  --ink: #EFE7D6;
+  --ink-2: #D6CDBC;
+  --muted: #948978;
+  --rule: rgba(239,231,214,.12);
+  --accent: oklch(0.72 0.13 42);
+  --accent-soft: oklch(0.72 0.13 42 / .16);
+  --bg: var(--cream);
+  --fg: var(--ink);
+  --fg-muted: var(--muted);
+  --card: var(--paper);
+  --shadow: 0 1px 0 rgba(0,0,0,.3), 0 30px 60px -30px rgba(0,0,0,.6);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.005em;
+  transition: background-color .5s ease, color .5s ease;
+  overflow-x: hidden;
+}
+
+/* paper noise texture */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: .5;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1  0 0 0 0 0.09  0 0 0 0 0.08  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+}
+[data-theme="dark"] body::before { mix-blend-mode: screen; opacity: .25; }
+
+/* selection */
+::selection { background: var(--accent); color: var(--paper); }
+
+/* ─────────────── layout ─────────────── */
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ─────────────── nav ─────────────── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s;
+}
+.nav.scrolled { border-bottom-color: var(--rule); }
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 0;
+}
+.brand {
+  font-family: var(--serif);
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  display: inline-flex; align-items: baseline; gap: 10px;
+  white-space: nowrap;
+  color: var(--fg) !important;
+  text-decoration: none !important;
+}
+a.brand:visited, a.brand:link, a.brand:hover, a.brand:active { color: var(--fg) !important; text-decoration: none !important; }
+.brand .dot {
+  display: inline-block;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--accent);
+  transform: translateY(-2px);
+  animation: breathe 3.5s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { transform: translateY(-2px) scale(1); opacity: 1; }
+  50% { transform: translateY(-2px) scale(1.25); opacity: .75; }
+}
+.nav-links {
+  display: flex; gap: 28px; align-items: center;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.01em;
+}
+.nav-links a {
+  color: var(--fg-muted);
+  text-decoration: none;
+  position: relative;
+  padding: 4px 0;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--fg); }
+.nav-links a::after {
+  content: ""; position: absolute;
+  left: 0; bottom: -2px; height: 1px; width: 0;
+  background: var(--accent);
+  transition: width .3s cubic-bezier(.3,.7,.3,1);
+}
+.nav-links a:hover::after { width: 100%; }
+
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--fg);
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 13px;
+  transition: transform .4s cubic-bezier(.3,.7,.3,1), background .2s, border-color .2s;
+}
+.theme-toggle:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  transform: rotate(20deg);
+}
+.lang-toggle {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--fg);
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 17px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.lang-toggle:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.lang-toggle #langLabel { font-weight: 500; }
+
+/* ─────────────── hero ─────────────── */
+.hero {
+  padding: 110px 0 140px;
+  position: relative;
+}
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  padding: 7px 14px 7px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--card) 60%, transparent);
+  margin-bottom: 44px;
+}
+.status-chip .pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--sage);
+  position: relative;
+}
+.status-chip .pulse::after {
+  content: ""; position: absolute; inset: -3px;
+  border: 2px solid var(--sage);
+  border-radius: 50%;
+  animation: ping 2s ease-out infinite;
+}
+@keyframes ping {
+  0% { transform: scale(.6); opacity: .8; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+h1.display {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(56px, 9vw, 132px);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  margin: 0 0 34px;
+}
+h1.display .ital { font-style: italic; color: var(--accent); }
+h1.display .wave {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: wave 2.4s ease-in-out infinite;
+}
+@keyframes wave {
+  0%, 60%, 100% { transform: rotate(0); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+}
+
+.lede {
+  max-width: 640px;
+  font-size: 21px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  letter-spacing: -0.008em;
+  margin: 0 0 48px;
+}
+.lede .marker {
+  background: linear-gradient(120deg, transparent 0%, var(--accent-soft) 20%, var(--accent-soft) 80%, transparent 100%);
+  padding: 0 6px;
+  border-radius: 2px;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px 60px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.hero-meta .k { display: block; margin-bottom: 6px; opacity: .6; font-size: 10.5px; }
+.hero-meta .v { color: var(--fg); text-transform: none; font-size: 14px; letter-spacing: 0; font-family: var(--sans); }
+
+.scribble {
+  position: absolute;
+  right: -20px;
+  top: 180px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--accent);
+  transform: rotate(-6deg);
+  max-width: 180px;
+  line-height: 1.35;
+  opacity: 0;
+  animation: scribble-in 1s ease .8s forwards;
+  pointer-events: none;
+}
+.scribble::before {
+  content: "";
+  position: absolute;
+  left: -40px; top: 50%;
+  width: 36px; height: 1px;
+  background: var(--accent);
+  transform: rotate(-10deg);
+}
+@keyframes scribble-in { to { opacity: .8; transform: rotate(-6deg) translateY(0); } from { opacity: 0; transform: rotate(-6deg) translateY(10px); } }
+
+/* ─────────────── sections shared ─────────────── */
+section { padding: 100px 0; position: relative; }
+.section-head {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 40px;
+  align-items: baseline;
+  margin-bottom: 56px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.section-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 0;
+  font-weight: 400;
+}
+.section-title em { color: var(--accent); font-style: italic; }
+
+/* ─────────────── about ─────────────── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 40px;
+}
+.about-side {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.8;
+}
+.about-prose {
+  max-width: 640px;
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.about-prose p { margin: 0 0 22px; }
+.about-prose p:first-child { font-family: var(--serif); font-size: 26px; line-height: 1.35; color: var(--fg); letter-spacing: -0.01em; }
+.about-prose a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-soft); transition: border-color .2s; }
+.about-prose a:hover { border-color: var(--accent); }
+
+.chips {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 30px;
+}
+.chip {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 6px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--fg-muted);
+  background: var(--card);
+  transition: all .25s;
+  cursor: default;
+}
+.chip:hover {
+  color: var(--fg);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transform: translateY(-2px);
+}
+
+/* ─────────────── projects ─────────────── */
+.projects-list { position: relative; }
+.project {
+  display: grid;
+  grid-template-columns: 64px 1fr auto 90px;
+  align-items: baseline;
+  gap: 32px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: padding .35s cubic-bezier(.3,.7,.3,1);
+}
+.project:first-child { border-top: 1px solid var(--rule); }
+.project:hover { padding-left: 20px; }
+.project .pnum {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.06em;
+}
+.project .pname {
+  font-family: var(--serif);
+  font-size: 32px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  transition: color .2s, transform .35s cubic-bezier(.3,.7,.3,1);
+}
+.project:hover .pname { color: var(--accent); }
+.project .pdesc {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  max-width: 280px;
+  text-align: right;
+}
+.project .pyear {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  text-align: right;
+}
+
+/* hover preview card */
+.preview {
+  position: fixed;
+  pointer-events: none;
+  width: 360px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.94) rotate(-2deg);
+  transition: opacity .25s, transform .25s cubic-bezier(.3,.7,.3,1);
+  z-index: 40;
+  background: var(--card);
+  border: 1px solid var(--rule);
+}
+.preview.show { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-2deg); }
+.preview-thumb {
+  aspect-ratio: 4/3;
+  width: 100%;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+.preview-foot {
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex; justify-content: space-between;
+}
+
+/* ─────────────── experience ─────────────── */
+.xp {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 40px;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.xp:last-child { border-bottom: none; }
+.xp-when {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.06em;
+  padding-top: 7px;
+}
+.xp-role {
+  font-family: var(--serif);
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+}
+.xp-role .at { color: var(--fg-muted); font-style: italic; font-size: 18px; }
+.xp-desc {
+  font-size: 15.5px;
+  color: var(--ink-2);
+  line-height: 1.6;
+  margin: 10px 0 0;
+  max-width: 620px;
+}
+.xp-stack {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 14px;
+}
+.xp-stack span {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  padding: 3px 9px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
+/* ─────────────── writing ─────────────── */
+.writing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+.post {
+  padding: 32px 30px 32px 0;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: background .3s;
+}
+.post:nth-child(odd) { border-right: 1px solid var(--rule); padding-right: 30px; }
+.post:nth-child(even) { padding-left: 30px; padding-right: 0; }
+.post:hover { background: color-mix(in oklab, var(--accent-soft) 40%, transparent); }
+.post-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.post-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+  transition: color .2s;
+}
+.post:hover .post-title { color: var(--accent); }
+.post-excerpt {
+  font-size: 14.5px;
+  color: var(--fg-muted);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 420px;
+}
+.post-read {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.06em;
+}
+
+/* ─────────────── contact ─────────────── */
+.contact {
+  padding: 130px 0 80px;
+}
+.contact-head {
+  font-family: var(--serif);
+  font-size: clamp(48px, 7vw, 88px);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  max-width: 800px;
+  margin: 0 0 50px;
+}
+.contact-head em { color: var(--accent); font-style: italic; }
+.contact-mail {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--fg);
+  text-decoration: none;
+  position: relative;
+  padding: 8px 0;
+}
+.contact-mail::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 2px;
+  height: 1px; background: var(--fg);
+  transform-origin: left;
+  transition: transform .4s cubic-bezier(.3,.7,.3,1);
+}
+.contact-mail:hover::after { transform: scaleX(0); transform-origin: right; }
+.contact-mail .arr { transition: transform .3s; font-family: var(--sans); font-weight: 300; }
+.contact-mail:hover .arr { transform: translate(4px, -4px); }
+
+.socials {
+  display: flex; gap: 28px; margin-top: 50px;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.socials a {
+  color: var(--fg-muted);
+  text-decoration: none;
+  transition: color .2s;
+  position: relative;
+}
+.socials a:hover { color: var(--accent); }
+
+/* ─────────────── footer ─────────────── */
+footer {
+  padding: 40px 0 60px;
+  border-top: 1px solid var(--rule);
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+}
+footer .kbd {
+  display: inline-flex; gap: 4px; align-items: center;
+}
+footer .kbd kbd {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 6px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--card);
+}
+
+/* ─────────────── cursor ─────────────── */
+.cursor-dot, .cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 100;
+  mix-blend-mode: difference;
+}
+.cursor-dot {
+  width: 6px; height: 6px;
+  background: var(--cream);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width .25s, height .25s, background .25s;
+}
+.cursor-ring {
+  width: 34px; height: 34px;
+  border: 1px solid rgba(242,235,221,.7);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width .3s cubic-bezier(.3,.7,.3,1), height .3s cubic-bezier(.3,.7,.3,1), border-color .2s;
+}
+.cursor-hover .cursor-dot { width: 0; height: 0; }
+.cursor-hover .cursor-ring { width: 58px; height: 58px; border-color: var(--cream); }
+@media (hover: none), (max-width: 720px) {
+  .cursor-dot, .cursor-ring { display: none; }
+}
+
+/* ─────────────── easter egg ─────────────── */
+.egg {
+  position: fixed;
+  inset: 0;
+  background: var(--accent);
+  color: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .6s;
+  font-family: var(--serif);
+  text-align: center;
+}
+.egg.on { opacity: 1; pointer-events: auto; }
+.egg h2 { font-size: clamp(60px, 10vw, 140px); margin: 0; font-weight: 400; letter-spacing: -0.02em; line-height: 1; }
+.egg p { font-family: var(--mono); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; margin: 30px 0 0; opacity: .8; }
+
+/* ─────────────── tweaks panel ─────────────── */
+.tweaks {
+  position: fixed;
+  right: 24px; bottom: 24px;
+  width: 280px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  z-index: 60;
+  font-family: var(--sans);
+  font-size: 13px;
+  display: none;
+}
+.tweaks.on { display: block; }
+.tweaks h4 {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.tweaks h4 .close {
+  background: none; border: none; color: var(--fg-muted); cursor: pointer; font-size: 14px;
+}
+.tweak-row { margin-bottom: 14px; }
+.tweak-row label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.swatches { display: flex; gap: 8px; }
+.swatches button {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform .2s;
+}
+.swatches button.active { border-color: var(--fg); }
+.swatches button:hover { transform: scale(1.1); }
+.tweak-toggle {
+  display: flex; gap: 6px;
+}
+.tweak-toggle button {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 6px 10px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--fg-muted);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.tweak-toggle button.active {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+}
+
+/* ─────────────── reveal ─────────────── */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity .8s, transform .8s; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ─────────────── responsive ─────────────── */
+@media (max-width: 760px) {
+  .wrap { padding: 0 22px; }
+  .hero { padding: 70px 0 90px; }
+  section { padding: 70px 0; }
+  .section-head, .about-grid, .xp { grid-template-columns: 1fr; gap: 14px; }
+  .writing-grid { grid-template-columns: 1fr; }
+  .post:nth-child(odd) { border-right: none; padding-right: 0; }
+  .post:nth-child(even) { padding-left: 0; }
+  .project { grid-template-columns: 32px 1fr; gap: 14px; }
+  .project .pdesc, .project .pyear { display: none; }
+  .scribble { display: none; }
+  .hero-meta { gap: 20px 40px; }
+  footer { flex-direction: column; gap: 14px; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
+<nav class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand"><span class="dot"></span> Nejat Berk Şener</a>
+    <div class="nav-links">
+      <a href="#about" data-i18n="nav.about">about</a>
+      <a href="#work" data-i18n="nav.work">work</a>
+      <a href="#writing" data-i18n="nav.writing">writing</a>
+      <a href="#contact" data-i18n="nav.contact">contact</a>
+      <button class="lang-toggle" id="langToggle" aria-label="toggle language">
+        <span id="langLabel">EN</span>
+      </button>
+      <button class="theme-toggle" id="themeToggle" aria-label="toggle theme">
+        <span id="themeIcon">☀</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div id="top"></div>
+
+<!-- ─────────────── HERO ─────────────── -->
+<header class="hero">
+  <div class="wrap">
+    <div class="status-chip">
+      <span class="pulse"></span>
+      <span id="status-text"><span data-i18n="hero.status">available for new work</span> · <span data-i18n="hero.city">istanbul</span> · <span id="clock">—</span></span>
+    </div>
+
+    <h1 class="display" data-i18n-html="hero.headline">Hey<span class="wave">👋</span>, I'm Berk —<br>
+      I build <span class="ital">enterprise-grade</span><br>
+      software.</h1>
+
+    <p class="lede" data-i18n-html="hero.lede">Software engineer based in Istanbul, building the kind of <span class="marker">quietly reliable systems</span> that thirty-thousand people use every day without thinking about them — backends, integrations, and the middleware that keeps the lights on.</p>
+
+    <div class="hero-meta">
+      <div><span class="k" data-i18n="meta.currently">Currently</span><span class="v" data-i18n="meta.currentlyVal">Open to new opportunities</span></div>
+      <div><span class="k" data-i18n="meta.writes">Writes</span><span class="v" data-i18n="meta.writesVal">C#, .NET Core, React, TypeScript</span></div>
+      <div><span class="k" data-i18n="meta.openTo">Open to</span><span class="v" data-i18n="meta.openToVal">New roles · Freelance</span></div>
+    </div>
+
+    <div class="scribble" data-i18n="hero.scribble">say hi, the çay is already on</div>
+  </div>
+</header>
+
+<!-- ─────────────── ABOUT ─────────────── -->
+<section id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num" data-i18n="sec.1num">01 / About</div>
+      <h2 class="section-title" data-i18n-html="sec.1title">A little <em>about me</em></h2>
+    </div>
+
+    <div class="about-grid">
+      <aside class="about-side" data-i18n-html="about.side">b. 2001<br>istanbul, tr<br>he / him<br><br>☕ 3 cups/day<br>🌱 learning kafka<br>📚 reading <em>clean&nbsp;architecture</em></aside>
+
+      <div class="about-prose">
+        <p data-i18n="about.p1">I'm a software engineer focused on building enterprise applications, backend services, and system integrations using .NET and React.</p>
+
+        <p data-i18n="about.p2">Most of my work lives on high-volume internal platforms — HR systems, SSO, LMS integrations, automation workflows — the kind of software a business actually runs on. I care about clean, maintainable code, sensible data models, and solving real problems without over-engineering them.</p>
+
+        <p data-i18n-html="about.p3">Recently wrapped up two years at <a href="#experience">Zorlu Holding</a>, where I contributed to 15+ enterprise projects supporting 30K+ users across the group's companies. I'm currently between roles and <a href="#contact">open to new opportunities</a> — full-time, contract, or freelance.</p>
+
+        <div class="chips">
+          <span class="chip">C# / .NET Core</span>
+          <span class="chip">ASP.NET MVC</span>
+          <span class="chip">React</span>
+          <span class="chip">TypeScript</span>
+          <span class="chip">SQL Server</span>
+          <span class="chip">PostgreSQL</span>
+          <span class="chip">MongoDB</span>
+          <span class="chip">Redis</span>
+          <span class="chip">Elasticsearch</span>
+          <span class="chip">Kafka</span>
+          <span class="chip">OData</span>
+          <span class="chip">Azure DevOps</span>
+          <span class="chip">ELK Stack</span>
+          <span class="chip">CI/CD</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── WORK ─────────────── -->
+<section id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num" data-i18n="sec.2num">02 / Work</div>
+      <h2 class="section-title" data-i18n-html="sec.2title">Selected <em>projects</em></h2>
+    </div>
+
+    <div class="projects-list" id="projectsList">
+      <a class="project" data-preview="enocta">
+        <span class="pnum">01</span>
+        <span class="pname">Enocta LMS Integration</span>
+        <span class="pdesc" data-i18n="proj.1">Automated daily sync · 25K+ users · 1M+ records</span>
+        <span class="pyear">2025</span>
+      </a>
+      <a class="project" data-preview="jira">
+        <span class="pnum">02</span>
+        <span class="pname">AI Task Automation for Jira</span>
+        <span class="pdesc" data-i18n="proj.2">OpenAI breakdown → structured Jira tickets</span>
+        <span class="pyear">2025</span>
+      </a>
+      <a class="project" data-preview="sso">
+        <span class="pnum">03</span>
+        <span class="pname">Group SSO & HR Bridge</span>
+        <span class="pdesc" data-i18n="proj.3">Single sign-on across Zorlu group companies</span>
+        <span class="pyear">2024</span>
+      </a>
+      <a class="project" data-preview="events">
+        <span class="pnum">04</span>
+        <span class="pname">Internal Event Platform</span>
+        <span class="pdesc" data-i18n="proj.4">Enterprise event management for 30K+ employees</span>
+        <span class="pyear">2024</span>
+      </a>
+      <a class="project" data-preview="claude">
+        <span class="pnum">05</span>
+        <span class="pname">Claude Digital</span>
+        <span class="pdesc" data-i18n="proj.5">Co-founded agency · 30+ clients shipped</span>
+        <span class="pyear">2023</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- floating hover preview -->
+<div class="preview" id="preview">
+  <div class="preview-thumb" id="previewThumb"></div>
+  <div class="preview-foot">
+    <span id="previewStack">—</span>
+    <span id="previewKind" data-i18n="preview.case">case study →</span>
+  </div>
+</div>
+
+<!-- ─────────────── EXPERIENCE ─────────────── -->
+<section id="experience">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num" data-i18n="sec.3num">03 / Experience</div>
+      <h2 class="section-title" data-i18n-html="sec.3title">Where I've <em>worked</em></h2>
+    </div>
+
+    <div>
+      <div class="xp">
+        <div class="xp-when" data-i18n="xp1.when">Apr 2024 — Apr 2026</div>
+        <div>
+          <h3 class="xp-role" data-i18n-html="xp1.role">Software Development Specialist <span class="at">— Zorlu Holding</span></h3>
+          <p class="xp-desc" data-i18n="xp1.desc">Contributed to 15+ enterprise projects across Vestel, Zorlu Enerji, Zorlu PSM and the wider group — backend APIs, scheduled jobs, and middleware supporting 30K+ users and 5M+ continuously growing records. Built enterprise integrations for SSO, HR systems, Enocta LMS, and internal event platforms; improved monitoring through ELK Stack and App Insights.</p>
+          <div class="xp-stack"><span>.NET Core</span><span>ASP.NET MVC</span><span>React</span><span>OData</span><span>SQL Server</span><span>Kafka</span><span>Elasticsearch</span><span>Azure DevOps</span></div>
+        </div>
+      </div>
+
+      <div class="xp">
+        <div class="xp-when" data-i18n="xp2.when">Aug 2023 — Apr 2024</div>
+        <div>
+          <h3 class="xp-role" data-i18n-html="xp2.role">Co-Founder <span class="at">— Claude Digital</span></h3>
+          <p class="xp-desc" data-i18n="xp2.desc">Co-founded a digital agency offering social media management, digital marketing, and software solutions. Delivered work for 30+ clients, running end-to-end project execution and client communication alongside the development side.</p>
+          <div class="xp-stack"><span>React</span><span>Node</span><span>Client Services</span></div>
+        </div>
+      </div>
+
+      <div class="xp">
+        <div class="xp-when" data-i18n="xp3.when">Apr — May 2022</div>
+        <div>
+          <h3 class="xp-role" data-i18n-html="xp3.role">Software Development Intern <span class="at">— Markakod</span></h3>
+          <p class="xp-desc" data-i18n="xp3.desc">First real codebase. Assisted in front-end tasks, joined daily stand-ups, and picked up the habits — version control hygiene, code review, small commits — that still show up in my work today.</p>
+          <div class="xp-stack"><span>JavaScript</span><span>HTML</span><span>CSS</span></div>
+        </div>
+      </div>
+
+      <div class="xp">
+        <div class="xp-when" data-i18n="xp4.when">2019 — 2024</div>
+        <div>
+          <h3 class="xp-role" data-i18n-html="xp4.role">BSc Computer Engineering <span class="at">— Nişantaşı University</span></h3>
+          <p class="xp-desc" data-i18n="xp4.desc">100% scholarship · GPA 3.02 / 4.0. The years I learned the fundamentals, and learned just as much by building things outside the syllabus.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── WRITING ─────────────── -->
+<section id="writing">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num" data-i18n="sec.4num">04 / Writing</div>
+      <h2 class="section-title" data-i18n-html="sec.4title">Recent <em>notes</em></h2>
+    </div>
+
+    <div class="writing-grid">
+      <a class="post">
+        <div class="post-date" data-i18n="w1.date">Mar 2026 · 7 min</div>
+        <h3 class="post-title" data-i18n="w1.title">Turning a manual LMS workflow into a daily job</h3>
+        <p class="post-excerpt" data-i18n="w1.excerpt">What I learned automating training sync for 25K+ users across a holding group — and why the scheduler was the easy part.</p>
+        <div class="post-read" data-i18n="post.read">read →</div>
+      </a>
+      <a class="post">
+        <div class="post-date" data-i18n="w2.date">Feb 2026 · 5 min</div>
+        <h3 class="post-title" data-i18n="w2.title">When OData actually earns its keep</h3>
+        <p class="post-excerpt" data-i18n="w2.excerpt">A defense of unfashionable tech. Where OData shines on internal enterprise APIs, and where I still reach for plain REST.</p>
+        <div class="post-read" data-i18n="post.read">read →</div>
+      </a>
+      <a class="post">
+        <div class="post-date" data-i18n="w3.date">Dec 2025 · 10 min</div>
+        <h3 class="post-title" data-i18n="w3.title">Observability on a .NET stack with ELK and App Insights</h3>
+        <p class="post-excerpt" data-i18n="w3.excerpt">How I instrument services so on-call at 2am stops meaning guessing — practical notes from a .NET Core shop.</p>
+        <div class="post-read" data-i18n="post.read">read →</div>
+      </a>
+      <a class="post">
+        <div class="post-date" data-i18n="w4.date">Oct 2025 · 6 min</div>
+        <h3 class="post-title" data-i18n="w4.title">Shipping AI into a Jira workflow, quietly</h3>
+        <p class="post-excerpt" data-i18n="w4.excerpt">Using an LLM to break down user-reported issues into estimated tasks — and the guardrails that kept it from going off the rails.</p>
+        <div class="post-read" data-i18n="post.read">read →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── CONTACT ─────────────── -->
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2 class="contact-head" data-i18n-html="contact.head">Let's make something <em>quietly reliable</em>, together.</h2>
+
+    <a class="contact-mail" href="mailto:nejatsenerr@gmail.com">
+      nejatsenerr@gmail.com <span class="arr">↗</span>
+    </a>
+
+    <div class="socials">
+      <a href="mailto:nejatsenerr@gmail.com" data-i18n="contact.email">Email</a>
+      <a href="tel:+905374950642">+90 537 495 06 42</a>
+      <a href="https://www.linkedin.com/in/nejat-berk-sener/" target="_blank" rel="noopener" data-i18n="contact.linkedin">LinkedIn</a>
+      <a href="https://github.com/NejatSENER" target="_blank" rel="noopener" data-i18n="contact.github">GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; align-items:center; padding: 0;">
+    <div data-i18n-html="footer.credit">© 2026 Nejat Berk Şener · handmade in Istanbul</div>
+    <div class="kbd"><span data-i18n="footer.try">try</span> <kbd>↑</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd><kbd>←</kbd><kbd>→</kbd> <kbd>b</kbd> <kbd>a</kbd></div>
+  </div>
+</footer>
+
+<!-- easter egg -->
+<div class="egg" id="egg">
+  <h2>teşekkürler ✿</h2>
+  <p data-i18n="egg.msg">you found a small thing. press any key to return.</p>
+</div>
+
+<!-- tweaks panel -->
+<div class="tweaks" id="tweaks">
+  <h4>
+    <span data-i18n="tw.title">Tweaks</span>
+    <button class="close" id="tweaksClose">×</button>
+  </h4>
+  <div class="tweak-row">
+    <label data-i18n="tw.accent">Accent</label>
+    <div class="swatches" id="accentSwatches">
+      <button data-accent="oklch(0.58 0.13 42)" style="background:oklch(0.58 0.13 42)" class="active" title="terracotta"></button>
+      <button data-accent="oklch(0.55 0.10 150)" style="background:oklch(0.55 0.10 150)" title="sage"></button>
+      <button data-accent="oklch(0.50 0.12 240)" style="background:oklch(0.50 0.12 240)" title="ink blue"></button>
+      <button data-accent="oklch(0.55 0.15 340)" style="background:oklch(0.55 0.15 340)" title="plum"></button>
+      <button data-accent="oklch(0.65 0.13 80)"  style="background:oklch(0.65 0.13 80)"  title="ochre"></button>
+    </div>
+  </div>
+  <div class="tweak-row">
+    <label data-i18n="tw.theme">Theme</label>
+    <div class="tweak-toggle" id="themeToggleGroup">
+      <button data-theme="light" class="active" data-i18n="tw.light">Light</button>
+      <button data-theme="dark" data-i18n="tw.dark">Dark</button>
+    </div>
+  </div>
+  <div class="tweak-row">
+    <label data-i18n="tw.cursor">Cursor</label>
+    <div class="tweak-toggle" id="cursorToggle">
+      <button data-cursor="on" class="active" data-i18n="tw.on">On</button>
+      <button data-cursor="off" data-i18n="tw.off">Off</button>
+    </div>
+  </div>
+</div>
+
+<!-- project thumbnail templates (SVG placeholders) -->
+<template id="tpl-thumbs">
+  <svg data-key="enocta" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#F2EBDD"/>
+    <g font-family="JetBrains Mono" font-size="11" fill="#1B1815">
+      <text x="24" y="40" fill="#6E665B">[03:00] enocta_sync · cron</text>
+      <text x="24" y="70">→ fetching users (25,412)</text>
+      <text x="24" y="92" fill="oklch(0.62 0.08 150)">✓ synced 24,981 · skipped 431</text>
+      <text x="24" y="114">→ training records (1,284,506)</text>
+      <text x="24" y="136" fill="oklch(0.62 0.08 150)">✓ upserted 38,112 · unchanged 1.2M</text>
+      <text x="24" y="158">→ completion certificates</text>
+      <text x="24" y="180" fill="oklch(0.62 0.08 150)">✓ emitted 1,108</text>
+      <text x="24" y="210" fill="#6E665B">done in 4m 12s · next run 24h</text>
+    </g>
+    <circle cx="360" cy="34" r="5" fill="oklch(0.58 0.13 42)"/>
+    <text x="24" y="260" font-family="Instrument Serif" font-style="italic" font-size="18" fill="oklch(0.58 0.13 42)">100% automated.</text>
+  </svg>
+
+  <svg data-key="jira" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#14110E"/>
+    <g font-family="JetBrains Mono" font-size="10.5" fill="#EFE7D6">
+      <text x="20" y="38" fill="#948978">issue #2041 · "login takes ~8s on mobile"</text>
+      <text x="20" y="64" fill="oklch(0.72 0.13 42)">▸ breaking down with gpt…</text>
+    </g>
+    <g font-family="Geist" font-size="11" fill="#EFE7D6">
+      <rect x="20" y="80" width="360" height="38" rx="5" fill="#1F1B16" stroke="#3A332A"/>
+      <text x="30" y="100">PROJ-812  Profile auth token refresh</text>
+      <text x="30" y="114" fill="#948978" font-size="9.5">estimate: 3h · assigned: backend</text>
+      <rect x="20" y="128" width="360" height="38" rx="5" fill="#1F1B16" stroke="#3A332A"/>
+      <text x="30" y="148">PROJ-813  Mobile bundle code-split</text>
+      <text x="30" y="162" fill="#948978" font-size="9.5">estimate: 5h · assigned: frontend</text>
+      <rect x="20" y="176" width="360" height="38" rx="5" fill="#1F1B16" stroke="#3A332A"/>
+      <text x="30" y="196">PROJ-814  Add CDN cache headers</text>
+      <text x="30" y="210" fill="#948978" font-size="9.5">estimate: 1h · assigned: devops</text>
+    </g>
+    <text x="20" y="252" font-family="JetBrains Mono" font-size="10" fill="oklch(0.62 0.08 150)">✓ created 3 tickets · linked to #2041</text>
+  </svg>
+
+  <svg data-key="sso" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#F2EBDD"/>
+    <g transform="translate(200 150)">
+      <circle r="60" fill="none" stroke="#1B1815" stroke-opacity=".2" stroke-dasharray="3 4"/>
+      <circle r="18" fill="oklch(0.58 0.13 42)"/>
+      <text text-anchor="middle" y="4" font-family="JetBrains Mono" font-size="10" fill="#FBF6EB">SSO</text>
+    </g>
+    <g font-family="Geist" font-size="10.5" fill="#2E2924">
+      <circle cx="90" cy="80" r="22" fill="#FBF6EB" stroke="#1B1815" stroke-opacity=".2"/>
+      <text x="90" y="84" text-anchor="middle">Vestel</text>
+      <circle cx="310" cy="80" r="22" fill="#FBF6EB" stroke="#1B1815" stroke-opacity=".2"/>
+      <text x="310" y="84" text-anchor="middle">Enerji</text>
+      <circle cx="90" cy="220" r="22" fill="#FBF6EB" stroke="#1B1815" stroke-opacity=".2"/>
+      <text x="90" y="224" text-anchor="middle">PSM</text>
+      <circle cx="310" cy="220" r="22" fill="#FBF6EB" stroke="#1B1815" stroke-opacity=".2"/>
+      <text x="310" y="224" text-anchor="middle">Tekstil</text>
+      <circle cx="60" cy="150" r="18" fill="#FBF6EB" stroke="#1B1815" stroke-opacity=".2"/>
+      <text x="60" y="154" text-anchor="middle" font-size="9">HR</text>
+      <circle cx="340" cy="150" r="18" fill="#FBF6EB" stroke="#1B1815" stroke-opacity=".2"/>
+      <text x="340" y="154" text-anchor="middle" font-size="9">LMS</text>
+    </g>
+    <g stroke="#1B1815" stroke-opacity=".3" stroke-dasharray="2 3">
+      <line x1="112" y1="92" x2="182" y2="138"/>
+      <line x1="288" y1="92" x2="218" y2="138"/>
+      <line x1="112" y1="208" x2="182" y2="162"/>
+      <line x1="288" y1="208" x2="218" y2="162"/>
+      <line x1="78" y1="150" x2="182" y2="150"/>
+      <line x1="322" y1="150" x2="218" y2="150"/>
+    </g>
+  </svg>
+
+  <svg data-key="events" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#F2EBDD"/>
+    <g font-family="Instrument Serif" fill="#1B1815">
+      <text x="24" y="58" font-size="28" font-style="italic">Q2 Town Hall</text>
+    </g>
+    <g font-family="Geist" font-size="11" fill="#6E665B">
+      <text x="24" y="80">zorlu center · 14:00 · 1,240 registered</text>
+    </g>
+    <g font-family="Geist" font-size="11" fill="#2E2924">
+      <rect x="24" y="104" width="352" height="36" rx="5" fill="#FBF6EB" stroke="#1B1815" stroke-opacity=".12"/>
+      <text x="36" y="126">14:00  Opening remarks — Ahmet Y.</text>
+      <rect x="24" y="148" width="352" height="36" rx="5" fill="#FBF6EB" stroke="#1B1815" stroke-opacity=".12"/>
+      <text x="36" y="170">14:30  FY25 highlights — Zeynep D.</text>
+      <rect x="24" y="192" width="352" height="36" rx="5" fill="#FBF6EB" stroke="#1B1815" stroke-opacity=".12"/>
+      <text x="36" y="214">15:15  Q&amp;A · live on kafka-stream</text>
+    </g>
+    <g font-family="JetBrains Mono" font-size="10" fill="#6E665B">
+      <text x="24" y="254">registrations streaming · 12 new this minute</text>
+    </g>
+    <circle cx="368" cy="48" r="4" fill="oklch(0.58 0.13 42)"/>
+  </svg>
+
+  <svg data-key="claude" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#1A1714"/>
+    <g font-family="Instrument Serif" fill="#EFE7D6">
+      <text x="30" y="70" font-size="36" font-style="italic">claude digital</text>
+    </g>
+    <g font-family="JetBrains Mono" font-size="10" fill="#948978">
+      <text x="30" y="92">est. 2023 · ist · 30+ clients shipped</text>
+    </g>
+    <g font-family="Geist" font-size="11" fill="#EFE7D6">
+      <text x="30" y="130">— café branding &amp; single-page site</text>
+      <text x="30" y="150">— boutique hotel booking flow</text>
+      <text x="30" y="170">— fashion label social calendar</text>
+      <text x="30" y="190">— restaurant menu CMS</text>
+      <text x="30" y="210">— ngo donation portal</text>
+    </g>
+    <g font-family="Instrument Serif" font-style="italic" font-size="14" fill="oklch(0.72 0.13 42)" transform="rotate(-3 30 254)">
+      <text x="30" y="260">— small shop, careful work, on time.</text>
+    </g>
+  </svg>
+</template>
+
+<script>
+/* ─────────────── project data ─────────────── */
+const projects = {
+  enocta: { stack: ".NET Core · Scheduled Jobs · SQL Server" },
+  jira:   { stack: "OpenAI API · .NET · Jira REST" },
+  sso:    { stack: ".NET · Identity · SAML / OAuth" },
+  events: { stack: "ASP.NET MVC · React · Kafka" },
+  claude: { stack: "Agency · React · Branding" },
+};
+
+
+/* ─────────────── i18n ─────────────── */
+const I18N = {
+  en: {
+    "nav.about":"about","nav.work":"work","nav.writing":"writing","nav.contact":"contact",
+    "hero.status":"available for new work","hero.city":"istanbul",
+    "hero.headline":'Hey<span class="wave">👋</span>, I\'m Berk —<br>I build <span class="ital">enterprise-grade</span><br>software.',
+    "hero.lede":'Software engineer based in Istanbul, building the kind of <span class="marker">quietly reliable systems</span> that thirty-thousand people use every day without thinking about them — backends, integrations, and the middleware that keeps the lights on.',
+    "meta.currently":"Currently","meta.currentlyVal":"Open to new opportunities",
+    "meta.writes":"Writes","meta.writesVal":"C#, .NET Core, React, TypeScript",
+    "meta.openTo":"Open to","meta.openToVal":"New roles · Freelance",
+    "hero.scribble":"say hi, the çay is already on",
+    "sec.1num":"01 / About","sec.1title":'A little <em>about me</em>',
+    "sec.2num":"02 / Work","sec.2title":'Selected <em>projects</em>',
+    "sec.3num":"03 / Experience","sec.3title":'Where I\'ve <em>worked</em>',
+    "sec.4num":"04 / Writing","sec.4title":'Recent <em>notes</em>',
+    "about.side":'b. 2001<br>istanbul, tr<br>he / him<br><br>☕ 3 cups/day<br>🌱 learning kafka<br>📚 reading <em>clean&nbsp;architecture</em>',
+    "about.p1":"I'm a software engineer focused on building enterprise applications, backend services, and system integrations using .NET and React.",
+    "about.p2":"Most of my work lives on high-volume internal platforms — HR systems, SSO, LMS integrations, automation workflows — the kind of software a business actually runs on. I care about clean, maintainable code, sensible data models, and solving real problems without over-engineering them.",
+    "about.p3":'Recently wrapped up two years at <a href="#experience">Zorlu Holding</a>, where I contributed to 15+ enterprise projects supporting 30K+ users across the group\'s companies. I\'m currently between roles and <a href="#contact">open to new opportunities</a> — full-time, contract, or freelance.',
+    "proj.1":"Automated daily sync · 25K+ users · 1M+ records",
+    "proj.2":"OpenAI breakdown → structured Jira tickets",
+    "proj.3":"Single sign-on across Zorlu group companies",
+    "proj.4":"Enterprise event management for 30K+ employees",
+    "proj.5":"Co-founded agency · 30+ clients shipped",
+    "preview.case":"case study →",
+    "xp1.when":"Apr 2024 — Apr 2026",
+    "xp1.role":'Software Development Specialist <span class="at">— Zorlu Holding</span>',
+    "xp1.desc":"Contributed to 15+ enterprise projects across Vestel, Zorlu Enerji, Zorlu PSM and the wider group — backend APIs, scheduled jobs, and middleware supporting 30K+ users and 5M+ continuously growing records. Built enterprise integrations for SSO, HR systems, Enocta LMS, and internal event platforms; improved monitoring through ELK Stack and App Insights.",
+    "xp2.when":"Aug 2023 — Apr 2024",
+    "xp2.role":'Co-Founder <span class="at">— Claude Digital</span>',
+    "xp2.desc":"Co-founded a digital agency offering social media management, digital marketing, and software solutions. Delivered work for 30+ clients, running end-to-end project execution and client communication alongside the development side.",
+    "xp3.when":"Apr — May 2022",
+    "xp3.role":'Software Development Intern <span class="at">— Markakod</span>',
+    "xp3.desc":"First real codebase. Assisted in front-end tasks, joined daily stand-ups, and picked up the habits — version control hygiene, code review, small commits — that still show up in my work today.",
+    "xp4.when":"2019 — 2024",
+    "xp4.role":'BSc Computer Engineering <span class="at">— Nişantaşı University</span>',
+    "xp4.desc":"100% scholarship · GPA 3.02 / 4.0. The years I learned the fundamentals, and learned just as much by building things outside the syllabus.",
+    "w1.date":"Mar 2026 · 7 min",
+    "w1.title":"Turning a manual LMS workflow into a daily job",
+    "w1.excerpt":"What I learned automating training sync for 25K+ users across a holding group — and why the scheduler was the easy part.",
+    "w2.date":"Feb 2026 · 5 min",
+    "w2.title":"When OData actually earns its keep",
+    "w2.excerpt":"A defense of unfashionable tech. Where OData shines on internal enterprise APIs, and where I still reach for plain REST.",
+    "w3.date":"Dec 2025 · 10 min",
+    "w3.title":"Observability on a .NET stack with ELK and App Insights",
+    "w3.excerpt":"How I instrument services so on-call at 2am stops meaning guessing — practical notes from a .NET Core shop.",
+    "w4.date":"Oct 2025 · 6 min",
+    "w4.title":"Shipping AI into a Jira workflow, quietly",
+    "w4.excerpt":"Using an LLM to break down user-reported issues into estimated tasks — and the guardrails that kept it from going off the rails.",
+    "post.read":"read →",
+    "contact.head":'Let\'s make something <em>quietly reliable</em>, together.',
+    "contact.email":"Email","contact.linkedin":"LinkedIn","contact.github":"GitHub",
+    "footer.credit":"© 2026 Nejat Berk Şener · handmade in Istanbul",
+    "footer.try":"try",
+    "egg.msg":"you found a small thing. press any key to return.",
+    "tw.title":"Tweaks","tw.accent":"Accent","tw.theme":"Theme","tw.cursor":"Cursor",
+    "tw.light":"Light","tw.dark":"Dark","tw.on":"On","tw.off":"Off",
+  },
+  tr: {
+    "nav.about":"hakkımda","nav.work":"işler","nav.writing":"yazılar","nav.contact":"iletişim",
+    "hero.status":"yeni işlere açık","hero.city":"istanbul",
+    "hero.headline":'Merhaba<span class="wave">👋</span>, ben Berk —<br><span class="ital">kurumsal ölçekte</span><br>yazılımlar yapıyorum.',
+    "hero.lede":'İstanbul\'da yaşayan bir yazılım mühendisiyim; otuz binden fazla kişinin her gün farkında olmadan kullandığı <span class="marker">sessiz ve güvenilir sistemler</span> — backend servisleri, entegrasyonlar ve işleri döndüren ara katmanlar — inşa ediyorum.',
+    "meta.currently":"Şu anda","meta.currentlyVal":"Yeni fırsatlara açık",
+    "meta.writes":"Yazıyor","meta.writesVal":"C#, .NET Core, React, TypeScript",
+    "meta.openTo":"Açık","meta.openToVal":"Yeni pozisyonlar · Freelance",
+    "hero.scribble":"merhaba de, çay demlendi bile",
+    "sec.1num":"01 / Hakkımda","sec.1title":'Biraz <em>kendimden</em>',
+    "sec.2num":"02 / İşler","sec.2title":'Seçili <em>projeler</em>',
+    "sec.3num":"03 / Deneyim","sec.3title":'Nerelerde <em>çalıştım</em>',
+    "sec.4num":"04 / Yazılar","sec.4title":'Son <em>notlar</em>',
+    "about.side":'d. 2001<br>istanbul, tr<br>o / kendisi<br><br>☕ günde 3 bardak<br>🌱 kafka öğreniyor<br>📚 <em>clean&nbsp;architecture</em> okuyor',
+    "about.p1":".NET ve React kullanarak kurumsal uygulamalar, backend servisleri ve sistem entegrasyonları geliştiren bir yazılım mühendisiyim.",
+    "about.p2":"Vaktimin büyük kısmı yüksek hacimli iç platformlarda geçiyor — İK sistemleri, SSO, LMS entegrasyonları, otomasyon akışları — yani bir işletmenin gerçekten üzerinde döndüğü türden yazılımlar. Temiz, sürdürülebilir kod yazmayı, sağlam veri modelleri kurmayı ve gerçek problemleri gereksiz yere karmaşıklaştırmadan çözmeyi önemsiyorum.",
+    "about.p3":'Yakın zamanda <a href="#experience">Zorlu Holding</a>\'teki iki yıllık görevimi tamamladım; grup şirketleri genelinde 30.000+ kullanıcıyı destekleyen 15\'ten fazla kurumsal projeye katkıda bulundum. Şu anda yeni bir rol arıyorum ve <a href="#contact">yeni fırsatlara açığım</a> — tam zamanlı, sözleşmeli ya da freelance.',
+    "proj.1":"Otomatik günlük senkron · 25K+ kullanıcı · 1M+ kayıt",
+    "proj.2":"OpenAI ayrıştırma → yapılandırılmış Jira görevleri",
+    "proj.3":"Zorlu grup şirketleri genelinde tekil oturum açma",
+    "proj.4":"30K+ çalışan için kurumsal etkinlik yönetimi",
+    "proj.5":"Ortak kurucu · 30+ müşteri teslim",
+    "preview.case":"vaka çalışması →",
+    "xp1.when":"Nis 2024 — Nis 2026",
+    "xp1.role":'Yazılım Geliştirme Uzmanı <span class="at">— Zorlu Holding</span>',
+    "xp1.desc":"Vestel, Zorlu Enerji, Zorlu PSM ve daha geniş grup genelinde 15\'ten fazla kurumsal projeye katkı verdim — 30.000+ kullanıcıyı ve sürekli büyüyen 5M+ kaydı destekleyen backend API\'leri, zamanlanmış işler ve ara katmanlar. SSO, İK sistemleri, Enocta LMS ve dahili etkinlik platformları için kurumsal entegrasyonlar geliştirdim; ELK Stack ve App Insights ile izlemeyi iyileştirdim.",
+    "xp2.when":"Ağu 2023 — Nis 2024",
+    "xp2.role":'Ortak Kurucu <span class="at">— Claude Digital</span>',
+    "xp2.desc":"Sosyal medya yönetimi, dijital pazarlama ve yazılım çözümleri sunan bir dijital ajansın ortak kurucusu oldum. 30+ müşteriye uçtan uca proje yürütme ve iletişim süreçlerini yönetirken geliştirme tarafını da üstlendim.",
+    "xp3.when":"Nis — May 2022",
+    "xp3.role":'Yazılım Geliştirme Stajyeri <span class="at">— Markakod</span>',
+    "xp3.desc":"İlk gerçek kod tabanım. Frontend görevlerinde destek verdim, günlük stand-up\'lara katıldım ve bugün hâlâ işimde beliren alışkanlıkları — sürüm kontrol hijyeni, kod incelemesi, küçük commit\'ler — burada edindim.",
+    "xp4.when":"2019 — 2024",
+    "xp4.role":'Bilgisayar Mühendisliği Lisans <span class="at">— Nişantaşı Üniversitesi</span>',
+    "xp4.desc":"%100 burslu · Not Ort. 3.02 / 4.0. Temelleri öğrendiğim, ama müfredatın dışında bir şeyler üreterek en az onun kadarını öğrendiğim yıllar.",
+    "w1.date":"Mar 2026 · 7 dk",
+    "w1.title":"Manuel bir LMS akışını günlük bir işe dönüştürmek",
+    "w1.excerpt":"Bir holding genelinde 25.000+ kullanıcı için eğitim senkronizasyonunu otomatikleştirirken öğrendiklerim — ve neden zamanlayıcının işin en kolay kısmı olduğu.",
+    "w2.date":"Şub 2026 · 5 dk",
+    "w2.title":"OData ne zaman ekmeğinin hakkını verir",
+    "w2.excerpt":"Modası geçmiş sayılan teknolojinin savunması. OData\'nın iç kurumsal API\'lerde parladığı yerler ve hâlâ düz REST\'e başvurduğum durumlar.",
+    "w3.date":"Ara 2025 · 10 dk",
+    "w3.title":".NET yığınında ELK ve App Insights ile gözlemlenebilirlik",
+    "w3.excerpt":"Gece 2\'deki on-call\'un tahmin oyunu olmaktan çıkması için servisleri nasıl enstrümante ediyorum — .NET Core tarafından pratik notlar.",
+    "w4.date":"Eki 2025 · 6 dk",
+    "w4.title":"Jira akışına yapay zekâyı sessizce yerleştirmek",
+    "w4.excerpt":"Kullanıcı bildirimlerini tahminlenmiş görevlere bölmek için bir LLM kullanmak — ve işleri rayında tutan güvenlik çitleri.",
+    "post.read":"oku →",
+    "contact.head":'Hadi birlikte <em>sessiz ama sağlam</em> bir şey yapalım.',
+    "contact.email":"E-posta","contact.linkedin":"LinkedIn","contact.github":"GitHub",
+    "footer.credit":"© 2026 Nejat Berk Şener · İstanbul\'da elde yapıldı",
+    "footer.try":"dene",
+    "egg.msg":"küçük bir şey buldun. geri dönmek için bir tuşa bas.",
+    "tw.title":"Ayarlar","tw.accent":"Vurgu","tw.theme":"Tema","tw.cursor":"İmleç",
+    "tw.light":"Açık","tw.dark":"Koyu","tw.on":"Açık","tw.off":"Kapalı",
+  }
+};
+
+function applyLang(lang) {
+  const dict = I18N[lang] || I18N.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (dict[k] != null) el.textContent = dict[k];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const k = el.getAttribute('data-i18n-html');
+    if (dict[k] != null) el.innerHTML = dict[k];
+  });
+  document.documentElement.lang = lang;
+  const label = document.getElementById('langLabel');
+  if (label) label.textContent = lang.toUpperCase();
+  try { localStorage.setItem('berk-lang', lang); } catch(e){}
+}
+
+const savedLang = (()=>{ try { return localStorage.getItem('berk-lang'); } catch(e){ return null; } })();
+const initialLang = savedLang || (navigator.language && navigator.language.toLowerCase().startsWith('tr') ? 'tr' : 'en');
+applyLang(initialLang);
+
+document.getElementById('langToggle').addEventListener('click', () => {
+  const cur = document.documentElement.lang === 'tr' ? 'tr' : 'en';
+  applyLang(cur === 'en' ? 'tr' : 'en');
+});
+
+/* ─────────────── theme ─────────────── */
+const root = document.documentElement;
+const themeIcon = document.getElementById('themeIcon');
+function setTheme(t) {
+  root.dataset.theme = t;
+  themeIcon.textContent = t === 'dark' ? '☾' : '☀';
+  document.querySelectorAll('#themeToggleGroup button').forEach(b =>
+    b.classList.toggle('active', b.dataset.theme === t));
+  try { localStorage.setItem('berk-theme', t); } catch(e){}
+  postEdits({ theme: t });
+}
+const savedTheme = (()=>{ try { return localStorage.getItem('berk-theme'); } catch(e){ return null; } })();
+setTheme(savedTheme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+document.getElementById('themeToggle').addEventListener('click', () => {
+  setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+
+/* ─────────────── clock ─────────────── */
+function tick() {
+  const d = new Date();
+  const opts = { timeZone: 'Europe/Istanbul', hour: '2-digit', minute: '2-digit', hour12: false };
+  document.getElementById('clock').textContent = d.toLocaleTimeString('en-GB', opts);
+}
+setInterval(tick, 1000); tick();
+
+/* ─────────────── nav scroll ─────────────── */
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 10));
+
+/* ─────────────── reveal on scroll ─────────────── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('section, .project, .post, .xp').forEach(el => {
+  el.classList.add('reveal'); io.observe(el);
+});
+
+/* ─────────────── custom cursor ─────────────── */
+const dot = document.querySelector('.cursor-dot');
+const ring = document.querySelector('.cursor-ring');
+let mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my;
+let cursorOn = true;
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`; });
+function loop() {
+  rx += (mx - rx) * 0.18;
+  ry += (my - ry) * 0.18;
+  ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
+  requestAnimationFrame(loop);
+}
+loop();
+document.querySelectorAll('a, button, .project, .post, .chip').forEach(el => {
+  el.addEventListener('pointerenter', () => document.body.classList.add('cursor-hover'));
+  el.addEventListener('pointerleave', () => document.body.classList.remove('cursor-hover'));
+});
+
+/* ─────────────── project hover preview ─────────────── */
+const preview = document.getElementById('preview');
+const previewThumb = document.getElementById('previewThumb');
+const previewStack = document.getElementById('previewStack');
+const thumbTpl = document.getElementById('tpl-thumbs');
+const thumbs = {};
+thumbTpl.content.querySelectorAll('svg').forEach(svg => thumbs[svg.dataset.key] = svg);
+
+document.querySelectorAll('#projectsList .project').forEach(p => {
+  p.addEventListener('pointerenter', () => {
+    const key = p.dataset.preview;
+    previewThumb.innerHTML = '';
+    if (thumbs[key]) previewThumb.appendChild(thumbs[key].cloneNode(true));
+    previewStack.textContent = projects[key]?.stack || '';
+    preview.classList.add('show');
+  });
+  p.addEventListener('pointerleave', () => preview.classList.remove('show'));
+  p.addEventListener('pointermove', e => {
+    preview.style.left = (e.clientX + 180) + 'px';
+    preview.style.top  = (e.clientY) + 'px';
+  });
+});
+
+/* ─────────────── konami easter egg ─────────────── */
+const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let ki = 0;
+const egg = document.getElementById('egg');
+addEventListener('keydown', e => {
+  if (egg.classList.contains('on')) { egg.classList.remove('on'); ki = 0; return; }
+  const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  if (k === konami[ki]) {
+    ki++;
+    if (ki === konami.length) { egg.classList.add('on'); ki = 0; }
+  } else {
+    ki = (k === konami[0]) ? 1 : 0;
+  }
+});
+
+/* ─────────────── tweaks: edit-mode protocol ─────────────── */
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "oklch(0.58 0.13 42)",
+  "theme": "light",
+  "cursor": "on"
+}/*EDITMODE-END*/;
+
+const tweaks = document.getElementById('tweaks');
+const tweaksClose = document.getElementById('tweaksClose');
+
+function applyAccent(a) {
+  root.style.setProperty('--accent', a);
+  const soft = a.replace(')', ' / .14)').replace('oklch(', 'oklch(');
+  root.style.setProperty('--accent-soft', soft);
+  document.querySelectorAll('#accentSwatches button').forEach(b =>
+    b.classList.toggle('active', b.dataset.accent === a));
+}
+function applyCursor(state) {
+  cursorOn = state === 'on';
+  dot.style.display = cursorOn ? '' : 'none';
+  ring.style.display = cursorOn ? '' : 'none';
+  document.querySelectorAll('#cursorToggle button').forEach(b =>
+    b.classList.toggle('active', b.dataset.cursor === state));
+}
+
+applyAccent(TWEAK_DEFAULTS.accent);
+applyCursor(TWEAK_DEFAULTS.cursor);
+
+document.querySelectorAll('#accentSwatches button').forEach(b => {
+  b.addEventListener('click', () => { applyAccent(b.dataset.accent); postEdits({ accent: b.dataset.accent }); });
+});
+document.querySelectorAll('#themeToggleGroup button').forEach(b => {
+  b.addEventListener('click', () => setTheme(b.dataset.theme));
+});
+document.querySelectorAll('#cursorToggle button').forEach(b => {
+  b.addEventListener('click', () => { applyCursor(b.dataset.cursor); postEdits({ cursor: b.dataset.cursor }); });
+});
+
+function postEdits(edits) {
+  try { window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*'); } catch(e){}
+}
+
+window.addEventListener('message', e => {
+  const d = e.data;
+  if (!d || typeof d !== 'object') return;
+  if (d.type === '__activate_edit_mode') tweaks.classList.add('on');
+  if (d.type === '__deactivate_edit_mode') tweaks.classList.remove('on');
+});
+tweaksClose.addEventListener('click', () => tweaks.classList.remove('on'));
+
+// announce after listener is registered
+try { window.parent.postMessage({ type: '__edit_mode_available' }, '*'); } catch(e){}
+</script>
+</body>
+</html>

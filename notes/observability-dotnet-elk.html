@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Observability on a .NET stack with ELK and App Insights — Nejat Berk Şener</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="article.css">
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="wrap">
+    <a href="../Nejat Berk Sener.html" class="back">← back to home</a>
+    <a href="../Nejat Berk Sener.html#writing" class="back-alt">writing index</a>
+  </div>
+</nav>
+
+<article>
+  <header class="a-head wrap">
+    <div class="kicker">Observability · .NET</div>
+    <h1>Observability on a .NET stack with ELK and App Insights</h1>
+    <p class="standfirst">How I instrument services so on-call at 2am stops meaning guessing — practical notes from a .NET Core shop.</p>
+    <div class="meta">
+      <span>Dec 2025</span>
+      <span>·</span>
+      <span>10 min read</span>
+      <span>·</span>
+      <span>Nejat Berk Şener</span>
+    </div>
+  </header>
+
+  <div class="a-body wrap">
+    <p class="lede-p">The first real incident I worked at 2 AM went like this: an alert fired that said "error rate high." I opened the dashboard. It also said error rate high. I opened the logs. They said lots of things. Forty minutes later I finally understood what was happening, and by then the issue had mostly gone away on its own. This is not a story about heroism. It's a story about why I spent the next year getting better at observability.</p>
+
+    <p>What follows is the instrumentation playbook I've converged on for .NET Core services, running on Azure App Service, logging into both ELK Stack and Application Insights. It's opinionated and it's shaped by a specific stack, but most of the principles carry.</p>
+
+    <h2>Three pillars, ranked by how much I actually use them</h2>
+
+    <p>Logs, metrics, traces. Every vendor pitches them together; I don't use them equally.</p>
+
+    <p><strong>Logs are where I live at 2 AM.</strong> When something breaks, the question is always "what was the system actually doing," and structured logs with good correlation IDs answer that. This is 70% of my observability value.</p>
+
+    <p><strong>Metrics are where I notice something is breaking.</strong> Requests per second, error rate, P95 latency, queue depth. These are what alerts fire on. 20% of value, but it's the 20% that wakes me up.</p>
+
+    <p><strong>Traces are what I use to debug the weird ones.</strong> When a request is slow but every individual log entry looks fine, traces show me the 400ms of database call I didn't know was happening. 10% of value, but very high leverage for the specific cases it fits.</p>
+
+    <h2>The logging setup, concretely</h2>
+
+    <p>I use Serilog. Structured from day one. Every service has one enrichment setup that I paste into <code>Program.cs</code>:</p>
+
+    <pre><code>Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .Enrich.WithProperty("service", "ledger-api")
+    .Enrich.WithProperty("env", env.EnvironmentName)
+    .WriteTo.Console(new JsonFormatter())
+    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(uri)
+    {
+        IndexFormat = "logs-{0:yyyy.MM.dd}",
+        AutoRegisterTemplate = true,
+    })
+    .WriteTo.ApplicationInsights(telemetry, ...)
+    .CreateLogger();</code></pre>
+
+    <p>Three things matter here. First, <strong>structured output everywhere</strong> — the console is JSON too, so local dev and prod are the same shape. Second, <strong>service and env are always present</strong>, so you can filter across indexes without effort. Third, both ELK and App Insights get the same events; I've learned not to pick one — each has a different failure mode and they cover for each other.</p>
+
+    <h2>Correlation IDs or nothing</h2>
+
+    <p>If I could only pick one instrumentation habit, it'd be this: every inbound request gets a correlation ID, and every log line emitted while handling that request carries it. Every outbound HTTP call propagates it. Every message into Kafka carries it. Every downstream service logs it.</p>
+
+    <p>In .NET this is nearly free. <code>Activity.Current.TraceId</code> gives you a W3C-compliant ID; Serilog's <code>FromLogContext</code> picks it up; <code>HttpClient</code>'s default handler propagates it. The only thing I usually have to do manually is propagate it into Kafka headers on producer code and re-attach it on consumer code.</p>
+
+    <p>Once this is in place, debugging becomes: copy trace ID from the error, paste into Kibana, see every log line from every service involved in that request, in order. What used to take forty minutes takes two.</p>
+
+    <h2>What I log, and what I deliberately don't</h2>
+
+    <p><strong>I log every inbound request at info level</strong> with method, path, status, duration, user ID (hashed), and trace ID. This gives me an audit trail and a fallback when metrics are missing dimensions.</p>
+
+    <p><strong>I log every outbound call at info level</strong> to external systems (LMS, HR, third-party APIs). Duration and status. When the outside world breaks, this is the first place I look.</p>
+
+    <p><strong>I log nothing at info inside a hot loop.</strong> Learned this the hard way. A chatty info log inside a per-row processing loop turned a 2GB/day log bill into a 40GB/day log bill. When in doubt, debug level.</p>
+
+    <p><strong>I never log request bodies or response bodies by default.</strong> PII, payment details, auth tokens — they end up in there and you'll find out six months later during a compliance audit.</p>
+
+    <h2>App Insights specifically: use the things it's good at</h2>
+
+    <p>App Insights' live metrics are genuinely the best in class — open the blade during a deploy, watch requests flow through. Its dependency map (the "Application Map") auto-detects service-to-service calls and will often tell you which downstream is slow before you ask. And its end-to-end transaction view, fed by the same W3C trace ID, is the one thing I've never replicated in ELK.</p>
+
+    <p>Where it's weak: full-text search of logs at scale. Kibana wins there by a wide margin. So I route errors and traces through App Insights, and bulk logs through ELK, and query both.</p>
+
+    <h2>Alerts should be boring</h2>
+
+    <p>My alert bar is high. I'd rather miss a non-issue than wake up for a blip. Three rules:</p>
+
+    <p>Alerts fire on <em>user-visible symptoms</em>, not on internal conditions. "Error rate over 5% for 5 minutes" is a good alert. "Memory usage over 80%" is not — users don't care about memory, they care about whether their request worked.</p>
+
+    <p>Every alert has a runbook link in the message. The runbook says "this means X; check Y; if Y shows Z, do W." At 2 AM I can't think. The runbook does the thinking.</p>
+
+    <p>Alerts that fire and resolve themselves without action are bugs. Either the alert threshold is wrong, or there's a real transient issue worth understanding. Quiet the alert after you understand; don't leave it firing.</p>
+
+    <hr>
+
+    <p class="sign-off">None of this is novel. All of it is cheap. The gap between "we have logs" and "we have observability" is mostly discipline, not tooling — and my own gap narrowed dramatically the day I stopped treating instrumentation as something you add when there's time. Questions, disagreements, war stories — <a href="../Nejat Berk Sener.html#contact">always welcome</a>.</p>
+  </div>
+</article>
+
+<footer class="a-foot">
+  <div class="wrap">
+    <a href="../Nejat Berk Sener.html" class="back">← back to home</a>
+    <span>© 2026 Nejat Berk Şener</span>
+  </div>
+</footer>
+
+</body>
+</html>
