@@ -113,6 +113,7 @@ body::before {
   white-space: nowrap;
   color: var(--fg) !important;
   text-decoration: none !important;
+  margin-left: 8px;
 }
 a.brand:visited, a.brand:link, a.brand:hover, a.brand:active { color: var(--fg) !important; text-decoration: none !important; }
 .brand .dot {
@@ -496,20 +497,19 @@ section { padding: 100px 0; position: relative; }
 /* ─────────────── writing ─────────────── */
 .writing-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 0;
   border-top: 1px solid var(--rule);
 }
 .post {
-  padding: 32px 30px 32px 0;
+  padding: 32px 0;
   border-bottom: 1px solid var(--rule);
   text-decoration: none;
   color: inherit;
   position: relative;
   transition: background .3s;
+  max-width: 600px;
 }
-.post:nth-child(odd) { border-right: 1px solid var(--rule); padding-right: 30px; }
-.post:nth-child(even) { padding-left: 30px; padding-right: 0; }
 .post:hover { background: color-mix(in oklab, var(--accent-soft) 40%, transparent); }
 .post-date {
   font-family: var(--mono);
@@ -595,12 +595,19 @@ section { padding: 100px 0; position: relative; }
 footer {
   padding: 40px 0 60px;
   border-top: 1px solid var(--rule);
-  display: flex; justify-content: space-between; align-items: center;
   font-family: var(--mono);
   font-size: 11.5px;
   color: var(--fg-muted);
   letter-spacing: 0.04em;
 }
+footer .wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+footer .wrap > div:first-child { margin-left: 8px; }
 footer .kbd {
   display: inline-flex; gap: 4px; align-items: center;
 }
@@ -732,20 +739,58 @@ footer .kbd kbd {
 .reveal { opacity: 0; transform: translateY(14px); transition: opacity .8s, transform .8s; }
 .reveal.in { opacity: 1; transform: translateY(0); }
 
+/* ─────────────── project inline preview (touch) ─────────────── */
+.pip {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .4s cubic-bezier(.3,.7,.3,1);
+}
+.pip-inner { min-height: 0; overflow: hidden; }
+.pip-content { padding: 14px 0 6px; }
+.pip-thumb {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  margin-bottom: 10px;
+}
+.pip-thumb svg { display: block; width: 100%; height: auto; }
+.pip-info {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.project.pip-open .pip { grid-template-rows: 1fr; }
+.project.pip-open .pname { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .pip { display: none; }
+}
+
 /* ─────────────── responsive ─────────────── */
 @media (max-width: 760px) {
-  .wrap { padding: 0 22px; }
+  .wrap { padding: 0 20px; }
   .hero { padding: 70px 0 90px; }
   section { padding: 70px 0; }
   .section-head, .about-grid, .xp { grid-template-columns: 1fr; gap: 14px; }
-  .writing-grid { grid-template-columns: 1fr; }
-  .post:nth-child(odd) { border-right: none; padding-right: 0; }
-  .post:nth-child(even) { padding-left: 0; }
-  .project { grid-template-columns: 32px 1fr; gap: 14px; }
+  .project { grid-template-columns: 32px minmax(0, 1fr); gap: 14px; }
+  .project .pname { font-size: 22px; }
   .project .pdesc, .project .pyear { display: none; }
   .scribble { display: none; }
-  .hero-meta { gap: 20px 40px; }
-  footer { flex-direction: column; gap: 14px; align-items: flex-start; }
+  .lede { font-size: 17px; }
+  .about-prose p:first-child { font-size: 20px; }
+  .hero-meta { gap: 20px 30px; }
+  .contact { padding: 80px 0 60px; }
+  .contact-mail { font-size: clamp(15px, 5vw, 28px); word-break: break-all; }
+  .socials { flex-wrap: wrap; gap: 16px 24px; }
+  footer .wrap { flex-direction: column; gap: 14px; align-items: flex-start; }
+}
+
+@media (max-width: 600px) {
+  .nav-links a { display: none; }
+  .nav-links { gap: 10px; }
+  footer .kbd { display: none; }
 }
 </style>
 </head>
@@ -794,7 +839,7 @@ footer .kbd kbd {
       <div><span class="k" data-i18n="meta.openTo">Open to</span><span class="v" data-i18n="meta.openToVal">New roles · Freelance</span></div>
     </div>
 
-    <div class="scribble" data-i18n="hero.scribble">say hi, the çay is already on</div>
+    <div class="scribble" data-i18n="hero.scribble">say hi, the kettle is already on</div>
   </div>
 </header>
 
@@ -851,30 +896,35 @@ footer .kbd kbd {
         <span class="pname">Enocta LMS Integration</span>
         <span class="pdesc" data-i18n="proj.1">Automated daily sync · 25K+ users · 1M+ records</span>
         <span class="pyear">2025</span>
+        <div class="pip"><div class="pip-inner"><div class="pip-content"><div class="pip-thumb"></div><div class="pip-info"></div></div></div></div>
       </a>
       <a class="project" data-preview="jira">
         <span class="pnum">02</span>
         <span class="pname">AI Task Automation for Jira</span>
         <span class="pdesc" data-i18n="proj.2">OpenAI breakdown → structured Jira tickets</span>
         <span class="pyear">2025</span>
+        <div class="pip"><div class="pip-inner"><div class="pip-content"><div class="pip-thumb"></div><div class="pip-info"></div></div></div></div>
       </a>
       <a class="project" data-preview="sso">
         <span class="pnum">03</span>
         <span class="pname">Group SSO & HR Bridge</span>
         <span class="pdesc" data-i18n="proj.3">Single sign-on across Zorlu group companies</span>
         <span class="pyear">2024</span>
+        <div class="pip"><div class="pip-inner"><div class="pip-content"><div class="pip-thumb"></div><div class="pip-info"></div></div></div></div>
       </a>
       <a class="project" data-preview="events">
         <span class="pnum">04</span>
         <span class="pname">Internal Event Platform</span>
         <span class="pdesc" data-i18n="proj.4">Enterprise event management for 30K+ employees</span>
         <span class="pyear">2024</span>
+        <div class="pip"><div class="pip-inner"><div class="pip-content"><div class="pip-thumb"></div><div class="pip-info"></div></div></div></div>
       </a>
       <a class="project" data-preview="claude">
         <span class="pnum">05</span>
         <span class="pname">Claude Digital</span>
         <span class="pdesc" data-i18n="proj.5">Co-founded agency · 30+ clients shipped</span>
         <span class="pyear">2023</span>
+        <div class="pip"><div class="pip-inner"><div class="pip-content"><div class="pip-thumb"></div><div class="pip-info"></div></div></div></div>
       </a>
     </div>
   </div>
@@ -899,7 +949,7 @@ footer .kbd kbd {
 
     <div>
       <div class="xp">
-        <div class="xp-when" data-i18n="xp1.when">Apr 2024 — Apr 2026</div>
+        <div class="xp-when" data-i18n="xp1.when">May 2024 — May 2026</div>
         <div>
           <h3 class="xp-role" data-i18n-html="xp1.role">Software Development Specialist <span class="at">— Zorlu Holding</span></h3>
           <p class="xp-desc" data-i18n="xp1.desc">Contributed to 15+ enterprise projects across Vestel, Zorlu Enerji, Zorlu PSM and the wider group — backend APIs, scheduled jobs, and middleware supporting 30K+ users and 5M+ continuously growing records. Built enterprise integrations for SSO, HR systems, Enocta LMS, and internal event platforms; improved monitoring through ELK Stack and App Insights.</p>
@@ -908,7 +958,7 @@ footer .kbd kbd {
       </div>
 
       <div class="xp">
-        <div class="xp-when" data-i18n="xp2.when">Aug 2023 — Apr 2024</div>
+        <div class="xp-when" data-i18n="xp2.when">Aug 2023 — May 2024</div>
         <div>
           <h3 class="xp-role" data-i18n-html="xp2.role">Co-Founder <span class="at">— Claude Digital</span></h3>
           <p class="xp-desc" data-i18n="xp2.desc">Co-founded a digital agency offering social media management, digital marketing, and software solutions. Delivered work for 30+ clients, running end-to-end project execution and client communication alongside the development side.</p>
@@ -917,7 +967,7 @@ footer .kbd kbd {
       </div>
 
       <div class="xp">
-        <div class="xp-when" data-i18n="xp3.when">Apr — May 2022</div>
+        <div class="xp-when" data-i18n="xp3.when">May — Apr 2022</div>
         <div>
           <h3 class="xp-role" data-i18n-html="xp3.role">Software Development Intern <span class="at">— Markakod</span></h3>
           <p class="xp-desc" data-i18n="xp3.desc">First real codebase. Assisted in front-end tasks, joined daily stand-ups, and picked up the habits — version control hygiene, code review, small commits — that still show up in my work today.</p>
@@ -945,28 +995,10 @@ footer .kbd kbd {
     </div>
 
     <div class="writing-grid">
-      <a class="post">
-        <div class="post-date" data-i18n="w1.date">Mar 2026 · 7 min</div>
-        <h3 class="post-title" data-i18n="w1.title">Turning a manual LMS workflow into a daily job</h3>
-        <p class="post-excerpt" data-i18n="w1.excerpt">What I learned automating training sync for 25K+ users across a holding group — and why the scheduler was the easy part.</p>
-        <div class="post-read" data-i18n="post.read">read →</div>
-      </a>
-      <a class="post">
-        <div class="post-date" data-i18n="w2.date">Feb 2026 · 5 min</div>
-        <h3 class="post-title" data-i18n="w2.title">When OData actually earns its keep</h3>
-        <p class="post-excerpt" data-i18n="w2.excerpt">A defense of unfashionable tech. Where OData shines on internal enterprise APIs, and where I still reach for plain REST.</p>
-        <div class="post-read" data-i18n="post.read">read →</div>
-      </a>
-      <a class="post">
-        <div class="post-date" data-i18n="w3.date">Dec 2025 · 10 min</div>
-        <h3 class="post-title" data-i18n="w3.title">Observability on a .NET stack with ELK and App Insights</h3>
-        <p class="post-excerpt" data-i18n="w3.excerpt">How I instrument services so on-call at 2am stops meaning guessing — practical notes from a .NET Core shop.</p>
-        <div class="post-read" data-i18n="post.read">read →</div>
-      </a>
-      <a class="post">
-        <div class="post-date" data-i18n="w4.date">Oct 2025 · 6 min</div>
-        <h3 class="post-title" data-i18n="w4.title">Shipping AI into a Jira workflow, quietly</h3>
-        <p class="post-excerpt" data-i18n="w4.excerpt">Using an LLM to break down user-reported issues into estimated tasks — and the guardrails that kept it from going off the rails.</p>
+      <a class="post" href="./notes/ai-dedektorler.html">
+        <div class="post-date" data-i18n="w1.date">Oct 2025 · 6 min</div>
+        <h3 class="post-title" data-i18n="w1.title">AI Detectors and AI's</h3>
+        <p class="post-excerpt" data-i18n="w1.excerpt">What I found out trying to help a friend write an essay — how unreliable AI detectors are, the ban debate, and the absurd solution that worked.</p>
         <div class="post-read" data-i18n="post.read">read →</div>
       </a>
     </div>
@@ -984,7 +1016,6 @@ footer .kbd kbd {
 
     <div class="socials">
       <a href="mailto:nejatsenerr@gmail.com" data-i18n="contact.email">Email</a>
-      <a href="tel:+905374950642">+90 537 495 06 42</a>
       <a href="https://www.linkedin.com/in/nejat-berk-sener/" target="_blank" rel="noopener" data-i18n="contact.linkedin">LinkedIn</a>
       <a href="https://github.com/NejatSENER" target="_blank" rel="noopener" data-i18n="contact.github">GitHub</a>
     </div>
@@ -992,7 +1023,7 @@ footer .kbd kbd {
 </section>
 
 <footer>
-  <div class="wrap" style="display:flex; justify-content:space-between; align-items:center; padding: 0;">
+  <div class="wrap">
     <div data-i18n-html="footer.credit">© 2026 Nejat Berk Şener · handmade in Istanbul</div>
     <div class="kbd"><span data-i18n="footer.try">try</span> <kbd>↑</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd><kbd>←</kbd><kbd>→</kbd> <kbd>b</kbd> <kbd>a</kbd></div>
   </div>
@@ -1000,7 +1031,7 @@ footer .kbd kbd {
 
 <!-- easter egg -->
 <div class="egg" id="egg">
-  <h2>teşekkürler ✿</h2>
+  <h2 data-i18n="egg.title">teşekkürler ✿</h2>
   <p data-i18n="egg.msg">you found a small thing. press any key to return.</p>
 </div>
 
@@ -1169,7 +1200,7 @@ const I18N = {
     "meta.currently":"Currently","meta.currentlyVal":"Open to new opportunities",
     "meta.writes":"Writes","meta.writesVal":"C#, .NET Core, React, TypeScript",
     "meta.openTo":"Open to","meta.openToVal":"New roles · Freelance",
-    "hero.scribble":"say hi, the çay is already on",
+    "hero.scribble":"say hi, the kettle is already on",
     "sec.1num":"01 / About","sec.1title":'A little <em>about me</em>',
     "sec.2num":"02 / Work","sec.2title":'Selected <em>projects</em>',
     "sec.3num":"03 / Experience","sec.3title":'Where I\'ve <em>worked</em>',
@@ -1196,23 +1227,15 @@ const I18N = {
     "xp4.when":"2019 — 2024",
     "xp4.role":'BSc Computer Engineering <span class="at">— Nişantaşı University</span>',
     "xp4.desc":"100% scholarship · GPA 3.02 / 4.0. The years I learned the fundamentals, and learned just as much by building things outside the syllabus.",
-    "w1.date":"Mar 2026 · 7 min",
-    "w1.title":"Turning a manual LMS workflow into a daily job",
-    "w1.excerpt":"What I learned automating training sync for 25K+ users across a holding group — and why the scheduler was the easy part.",
-    "w2.date":"Feb 2026 · 5 min",
-    "w2.title":"When OData actually earns its keep",
-    "w2.excerpt":"A defense of unfashionable tech. Where OData shines on internal enterprise APIs, and where I still reach for plain REST.",
-    "w3.date":"Dec 2025 · 10 min",
-    "w3.title":"Observability on a .NET stack with ELK and App Insights",
-    "w3.excerpt":"How I instrument services so on-call at 2am stops meaning guessing — practical notes from a .NET Core shop.",
-    "w4.date":"Oct 2025 · 6 min",
-    "w4.title":"Shipping AI into a Jira workflow, quietly",
-    "w4.excerpt":"Using an LLM to break down user-reported issues into estimated tasks — and the guardrails that kept it from going off the rails.",
+    "w1.date":"Oct 2025 · 6 min",
+    "w1.title":"AI Detectors and AI's",
+    "w1.excerpt":"What I found out trying to help a friend write an essay — how unreliable AI detectors are, the ban debate, and the absurd solution that worked.",
     "post.read":"read →",
     "contact.head":'Let\'s make something <em>quietly reliable</em>, together.',
     "contact.email":"Email","contact.linkedin":"LinkedIn","contact.github":"GitHub",
     "footer.credit":"© 2026 Nejat Berk Şener · handmade in Istanbul",
     "footer.try":"try",
+    "egg.title":"thank you ✿",
     "egg.msg":"you found a small thing. press any key to return.",
     "tw.title":"Tweaks","tw.accent":"Accent","tw.theme":"Theme","tw.cursor":"Cursor",
     "tw.light":"Light","tw.dark":"Dark","tw.on":"On","tw.off":"Off",
@@ -1225,7 +1248,7 @@ const I18N = {
     "meta.currently":"Şu anda","meta.currentlyVal":"Yeni fırsatlara açık",
     "meta.writes":"Yazıyor","meta.writesVal":"C#, .NET Core, React, TypeScript",
     "meta.openTo":"Açık","meta.openToVal":"Yeni pozisyonlar · Freelance",
-    "hero.scribble":"merhaba de, çay demlendi bile",
+    "hero.scribble":"selam ver, çay demlendi bile",
     "sec.1num":"01 / Hakkımda","sec.1title":'Biraz <em>kendimden</em>',
     "sec.2num":"02 / İşler","sec.2title":'Seçili <em>projeler</em>',
     "sec.3num":"03 / Deneyim","sec.3title":'Nerelerde <em>çalıştım</em>',
@@ -1252,23 +1275,15 @@ const I18N = {
     "xp4.when":"2019 — 2024",
     "xp4.role":'Bilgisayar Mühendisliği Lisans <span class="at">— Nişantaşı Üniversitesi</span>',
     "xp4.desc":"%100 burslu · Not Ort. 3.02 / 4.0. Temelleri öğrendiğim, ama müfredatın dışında bir şeyler üreterek en az onun kadarını öğrendiğim yıllar.",
-    "w1.date":"Mar 2026 · 7 dk",
-    "w1.title":"Manuel bir LMS akışını günlük bir işe dönüştürmek",
-    "w1.excerpt":"Bir holding genelinde 25.000+ kullanıcı için eğitim senkronizasyonunu otomatikleştirirken öğrendiklerim — ve neden zamanlayıcının işin en kolay kısmı olduğu.",
-    "w2.date":"Şub 2026 · 5 dk",
-    "w2.title":"OData ne zaman ekmeğinin hakkını verir",
-    "w2.excerpt":"Modası geçmiş sayılan teknolojinin savunması. OData\'nın iç kurumsal API\'lerde parladığı yerler ve hâlâ düz REST\'e başvurduğum durumlar.",
-    "w3.date":"Ara 2025 · 10 dk",
-    "w3.title":".NET yığınında ELK ve App Insights ile gözlemlenebilirlik",
-    "w3.excerpt":"Gece 2\'deki on-call\'un tahmin oyunu olmaktan çıkması için servisleri nasıl enstrümante ediyorum — .NET Core tarafından pratik notlar.",
-    "w4.date":"Eki 2025 · 6 dk",
-    "w4.title":"Jira akışına yapay zekâyı sessizce yerleştirmek",
-    "w4.excerpt":"Kullanıcı bildirimlerini tahminlenmiş görevlere bölmek için bir LLM kullanmak — ve işleri rayında tutan güvenlik çitleri.",
+    "w1.date":"Ekim 2025 · 6 dk",
+    "w1.title":"Yapay Zeka Dedektörleri ve Yapay Zeka",
+    "w1.excerpt":"Bir arkadaşın ödevini kurtarmaya çalışırken keşfettiğim şeyler — AI dedektörlerinin güvenilmezliği, yasak tartışması ve işe yarayan çözüm.",
     "post.read":"oku →",
     "contact.head":'Hadi birlikte <em>sessiz ama sağlam</em> bir şey yapalım.',
     "contact.email":"E-posta","contact.linkedin":"LinkedIn","contact.github":"GitHub",
     "footer.credit":"© 2026 Nejat Berk Şener · İstanbul\'da elde yapıldı",
     "footer.try":"dene",
+    "egg.title":"teşekkürler ✿",
     "egg.msg":"küçük bir şey buldun. geri dönmek için bir tuşa bas.",
     "tw.title":"Ayarlar","tw.accent":"Vurgu","tw.theme":"Tema","tw.cursor":"İmleç",
     "tw.light":"Açık","tw.dark":"Koyu","tw.on":"Açık","tw.off":"Kapalı",
@@ -1363,19 +1378,36 @@ const thumbTpl = document.getElementById('tpl-thumbs');
 const thumbs = {};
 thumbTpl.content.querySelectorAll('svg').forEach(svg => thumbs[svg.dataset.key] = svg);
 
+const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
 document.querySelectorAll('#projectsList .project').forEach(p => {
-  p.addEventListener('pointerenter', () => {
-    const key = p.dataset.preview;
-    previewThumb.innerHTML = '';
-    if (thumbs[key]) previewThumb.appendChild(thumbs[key].cloneNode(true));
-    previewStack.textContent = projects[key]?.stack || '';
-    preview.classList.add('show');
-  });
-  p.addEventListener('pointerleave', () => preview.classList.remove('show'));
-  p.addEventListener('pointermove', e => {
-    preview.style.left = (e.clientX + 180) + 'px';
-    preview.style.top  = (e.clientY) + 'px';
-  });
+  if (isTouch) {
+    p.addEventListener('click', () => {
+      const key = p.dataset.preview;
+      const wasOpen = p.classList.contains('pip-open');
+      document.querySelectorAll('.project.pip-open').forEach(x => x.classList.remove('pip-open'));
+      if (!wasOpen) {
+        const pipThumb = p.querySelector('.pip-thumb');
+        const pipInfo  = p.querySelector('.pip-info');
+        if (thumbs[key] && pipThumb) { pipThumb.innerHTML = ''; pipThumb.appendChild(thumbs[key].cloneNode(true)); }
+        if (pipInfo) pipInfo.textContent = projects[key]?.stack || '';
+        p.classList.add('pip-open');
+      }
+    });
+  } else {
+    p.addEventListener('pointerenter', () => {
+      const key = p.dataset.preview;
+      previewThumb.innerHTML = '';
+      if (thumbs[key]) previewThumb.appendChild(thumbs[key].cloneNode(true));
+      previewStack.textContent = projects[key]?.stack || '';
+      preview.classList.add('show');
+    });
+    p.addEventListener('pointerleave', () => preview.classList.remove('show'));
+    p.addEventListener('pointermove', e => {
+      preview.style.left = (e.clientX + 180) + 'px';
+      preview.style.top  = (e.clientY) + 'px';
+    });
+  }
 });
 
 /* ─────────────── konami easter egg ─────────────── */
