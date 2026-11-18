@@ -98,6 +98,7 @@ const SIZE = phone ? '720' : (screen.width * devicePixelRatio > 2000 ? '1440' : 
 
 let outfit = 'casual';
 let mode = null;
+let asked = false;
 let state = 'intro';
 let seq = 0;
 let front = 0;
@@ -266,6 +267,7 @@ const veil = document.querySelector('.bubble-veil');
 
 function openBubble() {
   if (!bubble.hidden && bubble.classList.contains('open')) return;
+  asked = true;
   bubble.hidden = false;
   if (phone) {
     // phones: a centred modal over a dimmed page instead of a bubble beside the character
@@ -567,6 +569,8 @@ function main() {
   }
 
   setPoster('start');
+  // the question normally comes as the intro ends; ask anyway if the video stalls or loads slowly
+  setTimeout(() => { if (!mode && !asked) openBubble(); }, 7000);
   prefetch(['casual_idle', 'change', 'casual_point', 'casual_bored']);
   run([{
     name: 'casual_intro',
