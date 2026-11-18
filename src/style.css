@@ -77,7 +77,7 @@ body {
 .intro {
   position: absolute; z-index: 2;
   left: var(--gutter); top: 50%; transform: translateY(-46%);
-  width: min(560px, 40vw);
+  width: min(680px, 46vw);
 }
 .intro > * { animation: rise .7s cubic-bezier(.2, .7, .2, 1) both; }
 .intro > :nth-child(2) { animation-delay: .08s; }
@@ -96,7 +96,7 @@ h1 {
 .trust { margin: 18px 0 0; display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
 .trust[hidden] { display: none; }
 .trust::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--oak); }
-.lead { margin: 20px 0 0; max-width: 30ch; font-size: clamp(18px, 1.5vw, 21px); color: var(--muted); }
+.lead { margin: 20px 0 0; max-width: 38ch; font-size: clamp(18px, 1.5vw, 21px); color: var(--muted); }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
 .btn {
   translate: var(--mx, 0) var(--my, 0);
@@ -210,7 +210,6 @@ html.menu-open .nav { background: transparent !important; box-shadow: none !impo
 html.menu-open .nav .mark, html.menu-open .nav .mode-btn, html.menu-open .nav .menu-btn { color: var(--ink); border-color: var(--ink); }
 /* language switch: a small pill in the nav, a full-width pair in the phone menu */
 .lang { display: inline-flex; margin-left: auto; padding: 3px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px var(--line); }
-.nav .mode-btn:not([hidden]) + .lang { margin-left: 4px; }
 .lang button {
   min-width: 40px; min-height: 38px; padding: 0 10px; border: 0; border-radius: 999px; cursor: pointer;
   font: 600 13px/1 var(--fb); letter-spacing: .04em; color: var(--muted); background: none;
@@ -228,7 +227,6 @@ html[lang="en"] .pct-tr, html[lang="tr"] .pct-en { display: none; }
 @media (max-width: 760px) {
   .nav .lang:not(.lang-m) { display: none; }
   .menu-btn { display: block; margin-left: auto; }
-  .nav .mode-btn:not([hidden]) ~ .menu-btn { margin-left: 0; }
   .nav .mode-btn { padding: 0 10px; font-size: 14px; }
 }
 
