@@ -1,0 +1,269 @@
+:root {
+  --wall: #E8E8E6;
+  --paper: #F3F3F1;
+  --ink: #232323;
+  --muted: #55554F;
+  --oak: #966C4A;
+  --oak-deep: #7A5233;
+  --line: #D6D6D1;
+  --gutter: clamp(16px, 5vw, 72px);
+  --fd: 'Bricolage Grotesque', system-ui, sans-serif;
+  --fb: 'Inter', system-ui, sans-serif;
+  --vx: 80%;
+  --vy: 50%;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 17px/1.55 var(--fb);
+  -webkit-font-smoothing: antialiased;
+}
+:focus-visible { outline: 3px solid var(--oak); outline-offset: 3px; border-radius: 6px; }
+
+.skip {
+  position: fixed; left: 16px; top: -60px; z-index: 50;
+  background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 8px;
+}
+.skip:focus { top: 16px; }
+
+/* nav */
+.nav {
+  position: fixed; inset: 0 0 auto; z-index: 20;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px var(--gutter);
+  animation: fade .6s ease both;
+}
+.mark {
+  font: 700 20px/1 var(--fd); color: var(--ink); text-decoration: none;
+  display: grid; place-items: center; width: 44px; height: 44px;
+  border: 1.5px solid var(--ink); border-radius: 50%;
+  transition: background .2s, color .2s;
+}
+.mark:hover { background: var(--ink); color: var(--wall); }
+.nav-links { display: flex; gap: 8px; align-items: center; }
+.nav-links a, .mode-btn {
+  font: 500 15px/1 var(--fb); color: var(--ink); text-decoration: none;
+  background: none; border: 0; cursor: pointer;
+  min-height: 44px; padding: 0 14px; border-radius: 999px;
+  display: inline-flex; align-items: center;
+  transition: background .2s;
+}
+.nav-links a:hover, .mode-btn:hover { background: rgba(0, 0, 0, .06); }
+.mode-btn[hidden] { display: none; }
+
+/* hero */
+.hero {
+  position: relative; height: 100svh; min-height: 600px;
+  overflow: hidden; background: var(--wall);
+}
+@media (min-aspect-ratio: 43/20) {
+  .hero { height: calc(100vw / 2.15); }
+}
+.stage { position: absolute; inset: 0; }
+.stage video, .stage .poster {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: var(--vx) var(--vy);
+  opacity: 0; transition: opacity .16s linear;
+}
+.stage video.on, .stage .poster.on { opacity: 1; }
+.stage .poster { z-index: 0; }
+.stage video:not(.on), .stage .poster:not(.on) { transition: none; }
+.hero.on-char .stage { cursor: pointer; }
+
+.intro {
+  position: absolute; z-index: 2;
+  left: var(--gutter); top: 50%; transform: translateY(-46%);
+  width: min(560px, 40vw);
+}
+.intro > * { animation: rise .7s cubic-bezier(.2, .7, .2, 1) both; }
+.intro > :nth-child(2) { animation-delay: .08s; }
+.intro > :nth-child(3) { animation-delay: .16s; }
+.intro > :nth-child(4) { animation-delay: .24s; }
+.intro > :nth-child(5) { animation-delay: .9s; }
+
+.role {
+  margin: 0 0 12px; color: var(--oak-deep);
+  font: 600 13px/1.35 var(--fb); letter-spacing: .06em;
+}
+h1 {
+  margin: 0; font: 700 clamp(48px, 6.4vw, 96px)/.95 var(--fd); letter-spacing: -.03em;
+}
+.intro h1.h1-long { font-size: clamp(36px, 3.9vw, 62px); line-height: 1.02; letter-spacing: -.025em; }
+.trust { margin: 18px 0 0; display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+.trust[hidden] { display: none; }
+.trust::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--oak); }
+.lead { margin: 20px 0 0; max-width: 30ch; font-size: clamp(18px, 1.5vw, 21px); color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.btn {
+  translate: var(--mx, 0) var(--my, 0);
+  display: inline-flex; align-items: center; min-height: 50px; padding: 0 24px;
+  border-radius: 999px; font: 600 16px/1 var(--fb); text-decoration: none;
+  transition: transform .18s ease, background .2s, box-shadow .2s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(.97); }
+.btn-primary { background: var(--oak-deep); color: #fff; box-shadow: 0 6px 18px rgba(122, 82, 51, .25); }
+.btn-primary:hover { background: #6B4629; box-shadow: 0 10px 24px rgba(122, 82, 51, .3); }
+.btn-ghost { color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.btn-ghost:hover { background: rgba(0, 0, 0, .05); }
+.hint { margin: 28px 0 0; font-size: 14px; color: var(--muted); }
+.copy-swap { animation: swap .45s ease both; }
+
+/* bubble */
+.bubble {
+  position: absolute; z-index: 3; width: 300px;
+  background: #fff; border-radius: 22px; padding: 20px 16px 16px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .12), 0 2px 6px rgba(0, 0, 0, .06);
+  transform-origin: 100% 22%; transform: scale(.8) translateY(8px); opacity: 0;
+  transition: transform .35s cubic-bezier(.3, 1.4, .5, 1), opacity .2s;
+}
+.bubble.open { transform: none; opacity: 1; }
+.bubble::after {
+  content: ''; position: absolute; right: -9px; top: 34px;
+  border: 10px solid transparent; border-left-color: #fff; border-right: 0;
+}
+.bubble p { margin: 0 4px 12px; font: 700 20px/1.2 var(--fd); }
+.bubble .bubble-sub { margin: -6px 4px 14px; font: 400 14px/1.4 var(--fb); color: var(--muted); }
+
+/* the unanswered question follows the scroll, then folds into a corner chip (driven from main.js) */
+.bubble.is-floating {
+  position: fixed; left: 0 !important; top: 0 !important; right: auto; bottom: auto; z-index: 25;
+  width: var(--fw) !important; transform-origin: 0 0;
+}
+.tune-chip {
+  position: fixed; right: 20px; bottom: 20px; z-index: 30;
+  display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 6px 18px 6px 6px;
+  border: 0; border-radius: 999px; background: var(--oak-deep); color: #fff; cursor: pointer;
+  font: 600 14.5px/1 var(--fb); box-shadow: 0 14px 34px rgba(0, 0, 0, .28), 0 0 0 1px rgba(255, 255, 255, .08);
+  transform-origin: 100% 100%; opacity: 0; pointer-events: none; transition: background .2s;
+}
+.tune-chip:hover { background: #6B4629; }
+.tune-chip[hidden] { display: none; }
+.tune-chip img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--wall); }
+@media (max-width: 760px) {
+  .tune-chip { right: 16px; bottom: 16px; }
+}
+.bubble button {
+  display: block; width: 100%; min-height: 46px; margin-top: 6px; padding: 0 14px;
+  text-align: left; font: 500 15px/1.2 var(--fb); color: var(--ink);
+  background: var(--paper); border: 0; border-radius: 12px; cursor: pointer;
+  transition: background .2s, color .2s, transform .15s;
+}
+.bubble button:hover { background: var(--oak-deep); color: #fff; transform: translateX(-2px); }
+.bubble button:active { transform: scale(.98); }
+
+/* phone modal: dim layer and close button */
+.bubble-veil {
+  position: fixed; inset: 0; z-index: 49; background: rgba(20, 20, 18, .45);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  opacity: 0; transition: opacity .25s;
+}
+.bubble-veil.on { opacity: 1; }
+.bubble-veil[hidden] { display: none; }
+.bubble .bubble-x {
+  display: none; position: absolute; top: 10px; right: 10px; margin: 0;
+  width: 40px; min-height: 40px; height: 40px; padding: 0; place-items: center;
+  font: 400 26px/1 var(--fb); color: var(--muted); background: var(--paper); border-radius: 50%;
+}
+.bubble .bubble-x:hover { background: var(--line); color: var(--ink); transform: none; }
+.bubble.is-modal .bubble-x { display: grid; }
+
+/* phone menu */
+.menu-btn {
+  display: none; position: relative; width: 44px; height: 44px; padding: 0; margin-left: 4px;
+  border: 0; border-radius: 50%; background: none; color: var(--ink); cursor: pointer;
+}
+.menu-btn span {
+  position: absolute; left: 12px; width: 20px; height: 2px; border-radius: 2px; background: currentColor;
+  transition: transform .3s cubic-bezier(.3, 1.3, .5, 1), opacity .2s;
+}
+.menu-btn span:nth-child(1) { top: 15px; }
+.menu-btn span:nth-child(2) { top: 21px; }
+.menu-btn span:nth-child(3) { top: 27px; }
+.menu-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.menu-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.mmenu {
+  position: fixed; inset: 0; z-index: 19; background: var(--paper);
+  padding: 104px var(--gutter) 32px; overflow-y: auto;
+  opacity: 0; transition: opacity .25s;
+}
+.mmenu.on { opacity: 1; }
+.mmenu[hidden] { display: none; }
+.mmenu nav { display: grid; }
+.mmenu a {
+  padding: 14px 0; border-bottom: 1px solid var(--line);
+  font: 700 34px/1.1 var(--fd); letter-spacing: -.02em; color: var(--ink); text-decoration: none;
+  opacity: 0; transform: translateY(14px); transition: opacity .35s, transform .45s cubic-bezier(.2, .7, .2, 1);
+}
+.mmenu.on a { opacity: 1; transform: none; }
+.mmenu.on a:nth-child(2) { transition-delay: .04s; }
+.mmenu.on a:nth-child(3) { transition-delay: .08s; }
+.mmenu.on a:nth-child(4) { transition-delay: .12s; }
+.mmenu.on a:nth-child(5) { transition-delay: .16s; }
+html.menu-open { overflow: hidden; }
+html.menu-open .nav { background: transparent !important; box-shadow: none !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
+html.menu-open .nav .mark, html.menu-open .nav .mode-btn, html.menu-open .nav .menu-btn { color: var(--ink); border-color: var(--ink); }
+/* language switch: a small pill in the nav, a full-width pair in the phone menu */
+.lang { display: inline-flex; margin-left: auto; padding: 3px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px var(--line); }
+.nav .mode-btn:not([hidden]) + .lang { margin-left: 4px; }
+.lang button {
+  min-width: 40px; min-height: 38px; padding: 0 10px; border: 0; border-radius: 999px; cursor: pointer;
+  font: 600 13px/1 var(--fb); letter-spacing: .04em; color: var(--muted); background: none;
+  transition: background .2s, color .2s;
+}
+.lang button:hover { color: var(--ink); }
+.lang button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.nav.on-dark .lang { box-shadow: inset 0 0 0 1.5px #4A4A45; }
+.nav.on-dark .lang button { color: #B9B6AE; }
+.nav.on-dark .lang button[aria-pressed="true"] { background: #F1EFEA; color: #1E1E1C; }
+html.menu-open .nav .lang { display: none; }
+.lang-m { display: flex; margin: 32px 0 0; }
+.lang-m button { flex: 1; min-height: 48px; font-size: 15px; letter-spacing: 0; }
+html[lang="en"] .pct-tr, html[lang="tr"] .pct-en { display: none; }
+@media (max-width: 760px) {
+  .nav .lang:not(.lang-m) { display: none; }
+  .menu-btn { display: block; margin-left: auto; }
+  .nav .mode-btn:not([hidden]) ~ .menu-btn { margin-left: 0; }
+  .nav .mode-btn { padding: 0 10px; font-size: 14px; }
+}
+
+/* sections */
+.sections { display: flex; flex-direction: column; }
+.sec { padding: 96px var(--gutter); min-height: 50svh; border-top: 1px solid var(--line); }
+.sec h2 { margin: 0 0 12px; font: 700 clamp(32px, 4vw, 52px)/1 var(--fd); letter-spacing: -.02em; }
+:where(.sec) p { margin: 0; color: var(--muted); max-width: 60ch; }
+
+/* phone: text on top, character below */
+@media (max-width: 760px) {
+  :root { --vx: 100%; --vy: 50%; }
+  .hero { height: auto; min-height: 0; display: flex; flex-direction: column; }
+  .intro { order: -1; position: relative; left: auto; top: auto; transform: none; width: auto; padding: 88px 16px 8px; }
+  .intro .actions { margin-top: 24px; }
+  .stage { position: relative; aspect-ratio: 4 / 5; }
+  .hint { display: none; }
+  .actions .btn { flex: 1 1 100%; justify-content: center; }
+  /* the question opens as a centred card over a dimmed page */
+  .bubble.is-modal {
+    position: fixed; z-index: 50; left: 16px !important; right: 16px; top: 50% !important; bottom: auto;
+    width: auto; padding: 22px 18px 18px; transform-origin: 50% 50%;
+    transform: translateY(-50%) scale(.92);
+  }
+  .bubble.is-modal.open { transform: translateY(-50%); }
+  .bubble::after { display: none; }
+  .bubble p { margin-right: 40px; }
+  .bubble[hidden] { display: none; }
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+@keyframes fade { from { opacity: 0; } }
+@keyframes swap { from { opacity: 0; transform: translateY(6px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
