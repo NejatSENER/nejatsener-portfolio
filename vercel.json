@@ -1,4 +1,12 @@
 {
+  "framework": "vite",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/uploads/resume.pdf", "destination": "/cv/Nejat-Berk-Sener-CV-EN.pdf", "permanent": true },
+    { "source": "/uploads/Nejat Berk Şener ResumeEN.pdf", "destination": "/cv/Nejat-Berk-Sener-CV-EN.pdf", "permanent": true }
+  ]
 }
