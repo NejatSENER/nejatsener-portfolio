@@ -95,6 +95,8 @@ export const EN = {
   'Anneannemin Ekmekleri sitesinin tam sayfa görünümü': 'Full-page view of the Anneannemin Ekmekleri site',
   "Ev yapımı ekşi mayalı ekmekler için tanıtım ve WhatsApp'tan sipariş sitesi.": 'A showcase and WhatsApp ordering site for homemade sourdough bread.',
   'Siteyi aç': 'Open site',
+  'Foam Club sitesinin tam sayfa görünümü': 'Full-page view of the Foam Club site',
+  "Bostanlı'da gece 2'ye kadar açık bir kahve dükkânı için site: kaydırdıkça dolan bardak animasyonları, etkinlikler, menü, yol tarifi.": 'A site for a coffee shop in Bostanlı open until 2 a.m.: cups that fill as you scroll, events, menu, directions.',
   'Local Hair Studio sitesinin tam sayfa görünümü': 'Full-page view of the Local Hair Studio site',
   "Beşiktaş'ta kıvırcık saç stüdyosu için iki dilli site: hizmetler, galeri, yorumlar, randevu.": 'A bilingual site for a curly hair studio in Beşiktaş: services, gallery, reviews, booking.',
 
