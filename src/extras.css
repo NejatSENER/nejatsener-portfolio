@@ -155,6 +155,7 @@ html[data-mode="hire"] .c-hire, html[data-mode="client"] .c-client { display: bl
 .brief .btn-ghost { border: 0; background: transparent; }
 .field legend { margin-bottom: 10px; }
 .brief[hidden] { display: none; }
+.cap-box { min-height: 78px; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .brief .btn:disabled { opacity: .7; cursor: progress; }
 .done { margin-top: 32px; padding: 28px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); max-width: 560px; }
