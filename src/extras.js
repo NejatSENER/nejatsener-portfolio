@@ -2,7 +2,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Flip } from 'gsap/Flip';
-import { tt } from './i18n.js';
+import { tt, getLang } from './i18n.js';
 import { C } from './brand.js';
 
 gsap.registerPlugin(ScrollTrigger, Flip);
@@ -11,6 +11,8 @@ const hover = matchMedia('(hover: hover)');
 const TO = 'nejatsenerr@gmail.com';
 // Web3Forms access key: public by design, it only lets the form send to the owner's inbox
 const FORM_KEY = '4cea02ea-28b7-4690-bcc3-8e95279d0be5';
+// hCaptcha sitekey Web3Forms shares with free plans
+const CAP_KEY = '50b2fe65-b00b-4b9e-ad62-3ba471098be2';
 
 // [icon, name, categories (space separated)]
 const SKILLS = [
@@ -242,10 +244,37 @@ function initForm() {
   const err = form.querySelector('.send-err');
   const sent = form.querySelector('.sent');
 
+  // captcha: load the script only when the form comes near the screen
+  const capBox = form.querySelector('.cap-box');
+  const capErr = document.getElementById('f-cap-err');
+  let capId = null;
+  const loadCap = () => new Promise((resolve, reject) => {
+    window.onCapLoad = resolve;
+    const s = document.createElement('script');
+    s.src = `https://js.hcaptcha.com/1/api.js?render=explicit&onload=onCapLoad&recaptchacompat=off&hl=${getLang()}`;
+    s.async = true;
+    s.onerror = reject;
+    document.head.append(s);
+  });
+  const io = new IntersectionObserver(async ([entry]) => {
+    if (!entry.isIntersecting) return;
+    io.disconnect();
+    try {
+      await loadCap();
+      capId = window.hcaptcha.render(capBox, { sitekey: CAP_KEY, callback: () => { capErr.hidden = true; } });
+    } catch {
+      // blocked script: the send fails and the Gmail fallback shows
+    }
+  }, { rootMargin: '600px 0px' });
+  io.observe(form);
+  const resetCap = () => { if (capId !== null) window.hcaptcha.reset(capId); };
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const bad = checks.filter(([input, ok]) => !validate(input, ok));
     if (bad.length) { bad[0][0].focus(); return; }
+    const token = capId !== null ? window.hcaptcha.getResponse(capId) : '';
+    if (capId !== null && !token) { capErr.hidden = false; return; }
     const type = f.namedItem('type').value;
     const name = f.namedItem('name').value.trim();
     const email = f.namedItem('email').value.trim();
@@ -269,6 +298,7 @@ function initForm() {
           proje_turu: type,
           message,
           botcheck: f.namedItem('botcheck').checked,
+          'h-captcha-response': token,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -290,6 +320,7 @@ function initForm() {
         gsap.from(sent, { height: 0, opacity: 0, duration: 0.4, ease: 'power2.out', clearProps: 'height' });
       }
     } finally {
+      resetCap();
       btn.disabled = false;
       btn.textContent = tt('Mesajı gönder');
     }

@@ -200,6 +200,7 @@ export const EN = {
   'Birkaç cümle yaz, ücretsiz bir ön görüşme için sana dönerim.': "Write a few sentences and I'll get back to you for a free intro call.",
   'Adın': 'Your name',
   'Adını yazar mısın?': 'Could you add your name?',
+  'Robot olmadığını doğrular mısın?': "Could you confirm you're not a robot?",
   'E-posta adresin': 'Your email',
   'E-posta adresi eksik ya da hatalı görünüyor. ad@ornek.com biçiminde yaz.': 'The email looks missing or invalid. Use the name@example.com format.',
   'Proje türü': 'Project type',

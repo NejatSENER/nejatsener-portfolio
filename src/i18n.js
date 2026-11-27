@@ -5,7 +5,7 @@ const KEY = 'pf-lang';
 const TR = Object.fromEntries(Object.entries(EN).map(([tr, en]) => [en, tr]));
 const ATTRS = ['aria-label', 'alt', 'title', 'placeholder', 'data-toast'];
 // rendered from data (cases, skills, mode copy) or code samples: never walked
-const SKIP = 'script, style, pre, code, svg, .cases, .drawer-body, .skills, .toast, .foot-name, [data-copy], [data-copy-list]';
+const SKIP = 'script, style, pre, code, svg, .cases, .drawer-body, .skills, .toast, .foot-name, .cap-box, [data-copy], [data-copy-list]';
 
 const read = () => { try { return localStorage.getItem(KEY); } catch { return null; } };
 const write = (v) => { try { localStorage.setItem(KEY, v); } catch {} };
