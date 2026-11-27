@@ -63,7 +63,7 @@ const COPY = {
     h1: 'Selam, ben Nejat.',
     lead: 'Milyonlarca veriyi işleyen kurumsal altyapılar kurmaktan işletmeleri dijitale taşıyan web projelerine, oradan da otonom yapay zeka modellerinin hata analizine uzanan çok yönlü bir mühendislik pratiğim var.',
     a: ['Neler Üzerinde Çalışıyorum?', '#isler'],
-    b: ['Kahve İçelim / Bağlantı Kur', '#iletisim'],
+    b: ['Bağlantı Kur', '#iletisim'],
     trust: '',
     kicker: 'Merhaba demek için',
     aboutFirst: 'Yazılımın hem mutfağını hem vitrinini hem de yapay zeka tarafını inşa eden bir mühendisim.',
