@@ -283,7 +283,7 @@ export const COPY_EN = {
     h1: "Hi, I'm Nejat.",
     lead: 'My engineering practice spans enterprise infrastructure that processes millions of records, web projects that take businesses online, and failure analysis of autonomous AI models.',
     a: ['What Am I Working On?', '#isler'],
-    b: ["Let's Grab a Coffee / Connect", '#iletisim'],
+    b: ['Connect', '#iletisim'],
     trust: '',
     kicker: 'To say hello',
     aboutFirst: "I'm an engineer who builds the kitchen, the storefront and the AI side of software.",
